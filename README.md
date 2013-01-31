@@ -25,3 +25,6 @@ Each algorithm should implement either `UninformedSearch` or `InformedSearch` in
       
 When you add new algorithms you have to modify `META-INF/services/cz.cvut.fit.zum.api.AbstractAlgorithm` and add there your 
 full class name. Then your algorithm could be in different jar, just make sure it's added to java's claspath.
+
+
+![jgraph-search-gui preview](https://github.com/deric/jgraph-search-gui/blob/screenshots/screenshots/jgraph-gui-0.1.0.png)
