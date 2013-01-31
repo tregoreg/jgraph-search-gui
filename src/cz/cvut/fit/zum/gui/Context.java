@@ -1,0 +1,81 @@
+package cz.cvut.fit.zum.gui;
+
+import java.util.List;
+import cz.cvut.fit.zum.api.Node;
+import cz.cvut.fit.zum.data.NodeImpl;
+
+/**
+ *
+ * @author Tomas Barton
+ */
+public class Context {
+
+    private final List<NodeImpl> nodes;
+    private final NodeImpl startNode;
+    private final NodeImpl endNode;
+    private SearchLayer layer;
+    private int expandCalls;
+    private int exploredNodes;
+    private int targetCheck;
+
+    public Context(List<NodeImpl> nodes, NodeImpl startNode, NodeImpl endNode, SearchLayer layer) {
+        this.nodes = nodes;
+        this.layer = layer;
+        this.startNode = startNode;
+        this.endNode = endNode;
+        this.expandCalls = 0;
+        this.exploredNodes = 0;
+        this.targetCheck = 0;
+    }
+
+    public Node getStartNode() {
+        return this.startNode;
+    }
+
+    public Node getTargetNode() {
+        return this.endNode;
+    }
+
+    public List<NodeImpl> getNodes() {
+        return nodes;
+    }
+
+    public final NodeImpl getNode(int id) {
+        return nodes.get(id);
+    }
+
+    public boolean isFinal(int id) {
+        return id == this.endNode.getId();
+    }
+
+    public void highlightEdge(NodeImpl start, NodeImpl end) {
+        layer.higlightEdge(start, end);
+    }
+    
+    public void expandCalled(){
+        expandCalls++;
+    }
+
+    public int getExpandCalls() {
+        return expandCalls;
+    }
+
+    public int getExploredNodes() {
+        return exploredNodes;
+    }
+    
+    public void incExplored(int exp){
+        exploredNodes += exp;
+    }
+    
+    public void targetCheck(NodeImpl node){
+        targetCheck++;
+        layer.markCheckedPoint(node);
+    }
+
+    public int getTargetCheck() {
+        return targetCheck;
+    }
+    
+    
+}
