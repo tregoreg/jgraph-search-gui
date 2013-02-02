@@ -69,11 +69,14 @@ public class Context {
 
     public void incExplored(int exp) {
         exploredNodes += exp;
+        layer.repaint(); //after exploring some node we repaint the layer
     }
 
     public void targetCheck(NodeImpl node) {
         targetCheck++;
-        layer.markCheckedPoint(node);
+       if (node.getId() != startNode.getId()) {
+            layer.markCheckedPoint(node);
+        }
     }
 
     public int getTargetCheck() {

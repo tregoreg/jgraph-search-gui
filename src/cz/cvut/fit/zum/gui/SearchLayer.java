@@ -17,6 +17,7 @@ import cz.cvut.fit.zum.api.UninformedSearch;
 import cz.cvut.fit.zum.api.Node;
 import cz.cvut.fit.zum.data.NodeImpl;
 import cz.cvut.fit.zum.VisInfo;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import javax.swing.event.EventListenerList;
 import org.openide.util.Exceptions;
@@ -61,6 +62,7 @@ public class SearchLayer extends BufferedPanel {
                     }
                     final NodeImpl n = node;
                     highlightPoint(n, startPoint);
+                    repaint();
                 } else {
                     return;
                 }
@@ -72,7 +74,6 @@ public class SearchLayer extends BufferedPanel {
                     to = node;
                     if (node != null) {
                         node = null;
-                        highlightPoint(to, endPoint);
                         runSearch(from, to, alg);
                     }
 
@@ -108,14 +109,9 @@ public class SearchLayer extends BufferedPanel {
     }
 
     protected void higlightEdge(final NodeImpl start, final NodeImpl end) {
-        Thread highlight = new HighlightThread(start, end);
-        highlight.start();
-        highlight.setPriority(Thread.MIN_PRIORITY + 2);
-        try {
-            highlight.join();
-        } catch (InterruptedException e) {
-            Exceptions.printStackTrace(e);
-        }
+        graphics.setColor(edgeColor);
+        line = new Line2D.Double(start.getPoint(), end.getPoint());
+        graphics.draw(line);
     }
 
     void stopSearch() {
@@ -123,54 +119,12 @@ public class SearchLayer extends BufferedPanel {
         NodeImpl.getContext().setStop(true);
     }
 
-    private class HighlightThread extends Thread {
-
-        private NodeImpl start;
-        private NodeImpl end;
-
-        public HighlightThread(NodeImpl start, NodeImpl end) {
-            this.start = start;
-            this.end = end;
-        }
-
-        @Override
-        public void run() {
-            graphics.setColor(edgeColor);
-            line = new Line2D.Double(start.getPoint(), end.getPoint());
-            graphics.draw(line);
-            repaint();
-        }
-    }
-
     public void markCheckedPoint(final NodeImpl point) {
         highlightPoint(point, visited);
     }
 
     public void highlightPoint(final NodeImpl point, BufferedImage shape) {
-        Thread highlight = new HighlightPointThread(point, shape);
-        highlight.start();
-        highlight.setPriority(Thread.MIN_PRIORITY + 2);
-        try {
-            highlight.join();
-        } catch (InterruptedException e) {
-            Exceptions.printStackTrace(e);
-        }
-    }
-
-    private class HighlightPointThread extends Thread {
-
-        private NodeImpl point;
-        private BufferedImage shape;
-
-        public HighlightPointThread(NodeImpl point, BufferedImage shape) {
-            this.point = point;
-            this.shape = shape;
-        }
-
-        @Override
-        public void run() {
-            drawPoint(point, shape);
-        }
+        drawPoint(point, shape);
     }
 
     protected double highlightPath(List<Node> path) {
@@ -213,35 +167,52 @@ public class SearchLayer extends BufferedPanel {
         }
     }
 
-    private void runSearch(NodeImpl source, NodeImpl target, AbstractAlgorithm algorithm) {
+    private void runSearch(final NodeImpl source, final NodeImpl target, final AbstractAlgorithm algorithm) {
         highlightPoint(source, startPoint);
         highlightPoint(target, endPoint);
-        Context ctx = new Context(visInfo.getNodes(), source, target, this, delay);
+        repaint();
+        final Context ctx = new Context(visInfo.getNodes(), source, target, this, delay);
         NodeImpl.setContext(ctx);
-        fireAlgEvent(AlgorithmEvents.STARTED);
-        System.out.println("starting search");
-        AlgorithmRunner thread = new AlgorithmRunner(ctx, algorithm);
-        thread.setPriority(Thread.MIN_PRIORITY);
-        thread.start();
-        long timeout = 1000;
-        try {
-            thread.join(timeout);
-        } catch (InterruptedException e) {
-            Exceptions.printStackTrace(e);
-        }
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+
+                fireAlgEvent(AlgorithmEvents.STARTED);
+                System.out.println("starting search from " + source.getId() + " to " + target.getId());
+                AlgorithmRunner thread = new AlgorithmRunner(ctx, algorithm);
+                thread.setPriority(Thread.MIN_PRIORITY);
+
+                MonitorThread monitor = new MonitorThread(ctx);
+                monitor.setPriority(Thread.MAX_PRIORITY);
+                searchFinished = false;
+                monitor.start();
+                thread.start();
+                long timeout = 2000;
+                try {
+                    thread.join(timeout);
+                    monitor.join(timeout);
+                } catch (InterruptedException e) {
+                    Exceptions.printStackTrace(e);
+                }
+            }
+        });
     }
 
     private void drawPoint(NodeImpl node, BufferedImage shape) {
-        at.setToIdentity();
-        at.translate(node.getPoint().getX() - visInfo.getCircleDiam(), node.getPoint().getY() - visInfo.getCircleDiam());
-        graphics.drawImage(shape, at, null);
-        repaint();
+        if (node != null) {
+            at.setToIdentity();
+            at.translate(node.getPoint().getX() - visInfo.getCircleDiam(), node.getPoint().getY() - visInfo.getCircleDiam());
+            graphics.drawImage(shape, at, null);
+            //intentionally no repaint
+        }
     }
 
     @Override
     protected void drawComponent(Graphics2D g) {
         //nothing to do
         System.out.println("drawin component");
+        highlightPoint(from, startPoint);
+        highlightPoint(to, endPoint);
         if (from != null && to != null && alg != null) {
             runSearch(from, to, alg);
         }
@@ -284,6 +255,14 @@ public class SearchLayer extends BufferedPanel {
         runSearch(from, to, alg);
     }
 
+    public long getDelay() {
+        return delay;
+    }
+
+    public void setDelay(long delay) {
+        this.delay = delay;
+    }
+
     private class AlgorithmRunner extends Thread implements Runnable {
 
         private AbstractAlgorithm algorithm;
@@ -305,9 +284,14 @@ public class SearchLayer extends BufferedPanel {
                 throw new RuntimeException("Algorithm must implement either UninformedSearch or InformedSearch");
             }
 
+            searchFinished = true;
+            fireAlgEvent(AlgorithmEvents.FINISHED);
+
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    highlightPoint(from, startPoint);
+                    highlightPoint(to, endPoint);
                     double dist = highlightPath(path);
                     double expanded = ctx.getExpandCalls();
                     double cov = expanded / (double) visInfo.getNodesCount() * 100;
@@ -316,21 +300,37 @@ public class SearchLayer extends BufferedPanel {
                     stats.put("coverage", cov);
                     stats.put("distance", dist);
                     fireStatsChanged(stats);
-                    highlightPoint(from, startPoint);
-                    highlightPoint(to, endPoint);
-                    searchFinished = true;
-                    fireAlgEvent(AlgorithmEvents.FINISHED);
+                    repaint();
                 }
             });
 
         }
     }
 
-    public long getDelay() {
-        return delay;
-    }
+    private class MonitorThread extends Thread implements Runnable {
 
-    public void setDelay(long delay) {
-        this.delay = delay;
+        private Context ctx;
+
+        public MonitorThread(Context ctx) {
+            this.ctx = ctx;
+        }
+
+        @Override
+        public void run() {
+            while (!searchFinished) {
+                double expanded = ctx.getExpandCalls();
+                double cov = expanded / (double) visInfo.getNodesCount() * 100;
+                stats.put("explored", (double) ctx.getExploredNodes());
+                stats.put("expanded", expanded);
+                stats.put("coverage", cov);
+                fireStatsChanged(stats);
+                try {
+                    Thread.sleep(ctx.getDelay());
+                } catch (InterruptedException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+            System.out.println("monitor finished");
+        }
     }
 }

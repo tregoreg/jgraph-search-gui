@@ -41,13 +41,18 @@ public abstract class BufferedPanel extends JPanel {
     protected abstract void drawComponent(Graphics2D g);
 
     public void rescale(Dimension dim) {
-        this.setSize(dim);
-        setPreferredSize(getSize());
-        setMinimumSize(getSize());
-        updateLayer();
-    }
+        if (!getSize().equals(dim)) {
+            System.out.println(getSize() +" vs "+dim);
+            this.setSize(dim);
+            setPreferredSize(getSize());
+            setMinimumSize(getSize());
+            updateLayer();
+        }
 
+    }
+    
     public void updateLayer() {
+        //System.out.println(this.getClass().getName() + " layer update");
         bufferedImage = null;
         repaint();
     }
