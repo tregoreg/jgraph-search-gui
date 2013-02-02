@@ -173,29 +173,31 @@ public class SearchLayer extends BufferedPanel {
         repaint();
         final Context ctx = new Context(visInfo.getNodes(), source, target, this, delay);
         NodeImpl.setContext(ctx);
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
 
-                fireAlgEvent(AlgorithmEvents.STARTED);
-                System.out.println("starting search from " + source.getId() + " to " + target.getId());
-                AlgorithmRunner thread = new AlgorithmRunner(ctx, algorithm);
-                thread.setPriority(Thread.MIN_PRIORITY);
+        fireAlgEvent(AlgorithmEvents.STARTED);
+        System.out.println("starting search from " + source.getId() + " to " + target.getId());
+        System.out.println("thred cnt: "+Thread.activeCount());
+        AlgorithmRunner thread = new AlgorithmRunner(ctx, algorithm);
+        thread.setPriority(Thread.MIN_PRIORITY);
 
-                MonitorThread monitor = new MonitorThread(ctx);
-                monitor.setPriority(Thread.MAX_PRIORITY);
-                searchFinished = false;
-                monitor.start();
-                thread.start();
-                long timeout = 2000;
-                try {
-                    thread.join(timeout);
-                    monitor.join(timeout);
-                } catch (InterruptedException e) {
-                    Exceptions.printStackTrace(e);
-                }
-            }
-        });
+        MonitorThread monitor = new MonitorThread(ctx);
+        monitor.setPriority(Thread.NORM_PRIORITY);
+        searchFinished = false;
+        monitor.start();
+        thread.start();
+        long timeout = 2000;
+        try {
+            thread.join(timeout);
+            monitor.join(timeout);
+        } catch (InterruptedException e) {
+            Exceptions.printStackTrace(e);
+        }
+
     }
 
     private void drawPoint(NodeImpl node, BufferedImage shape) {
