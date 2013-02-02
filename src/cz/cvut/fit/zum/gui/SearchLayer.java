@@ -60,13 +60,7 @@ public class SearchLayer extends BufferedPanel {
                         searchFinished = false;
                     }
                     final NodeImpl n = node;
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            highlightPoint(n, startPoint);
-                        }
-                    });
-
+                    highlightPoint(n, startPoint);
                 } else {
                     return;
                 }
@@ -215,16 +209,13 @@ public class SearchLayer extends BufferedPanel {
         this.alg = algorithm;
         if (from != null && to != null) {
             updateLayer();
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    runSearch(from, to, alg);
-                }
-            });
+            runSearch(from, to, alg);
         }
     }
 
     private void runSearch(NodeImpl source, NodeImpl target, AbstractAlgorithm algorithm) {
+        highlightPoint(source, startPoint);
+        highlightPoint(target, endPoint);
         Context ctx = new Context(visInfo.getNodes(), source, target, this, delay);
         NodeImpl.setContext(ctx);
         fireAlgEvent(AlgorithmEvents.STARTED);
@@ -250,6 +241,7 @@ public class SearchLayer extends BufferedPanel {
     @Override
     protected void drawComponent(Graphics2D g) {
         //nothing to do
+        System.out.println("drawin component");
         if (from != null && to != null && alg != null) {
             runSearch(from, to, alg);
         }
@@ -289,13 +281,7 @@ public class SearchLayer extends BufferedPanel {
         from = a;
         to = b;
         updateLayer();
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                runSearch(from, to, alg);
-            }
-        });
-
+        runSearch(from, to, alg);
     }
 
     private class AlgorithmRunner extends Thread implements Runnable {

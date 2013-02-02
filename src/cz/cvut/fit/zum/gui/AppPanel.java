@@ -200,14 +200,11 @@ public class AppPanel extends JPanel implements AlgorithmListener {
 
     @Override
     public void searchStarted() {
-        System.out.println("enabling button");
         stopButton.setEnabled(true);
-        System.out.println("state " + stopButton.isEnabled());
     }
 
     @Override
     public void searchFinished() {
-        System.out.println("disabling button");
         stopButton.setEnabled(false);
     }
 }
