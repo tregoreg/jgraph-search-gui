@@ -105,6 +105,10 @@ public class NodeImpl implements Node {
         context = ctx;
     }
 
+    public static Context getContext() {
+        return context;
+    }
+
     @Override
     public List<Node> expand() {
         context.expandCalled();
@@ -120,6 +124,10 @@ public class NodeImpl implements Node {
                 context.highlightEdge(this, node2);
                 result.add(node2);
             }
+        }
+        //if we have to stop
+        if(context.isStop()){
+            throw new RuntimeException("Algorithm stopped by the user");
         }
         try {
             Thread.sleep(context.getDelay());

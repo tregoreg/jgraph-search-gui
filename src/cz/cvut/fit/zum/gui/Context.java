@@ -18,6 +18,7 @@ public class Context {
     private int exploredNodes;
     private int targetCheck;
     private long delay;
+    private boolean stop = false;
 
     public Context(List<NodeImpl> nodes, NodeImpl startNode, NodeImpl endNode, SearchLayer layer, long delay) {
         this.nodes = nodes;
@@ -53,8 +54,8 @@ public class Context {
     public void highlightEdge(NodeImpl start, NodeImpl end) {
         layer.higlightEdge(start, end);
     }
-    
-    public void expandCalled(){
+
+    public void expandCalled() {
         expandCalls++;
     }
 
@@ -65,12 +66,12 @@ public class Context {
     public int getExploredNodes() {
         return exploredNodes;
     }
-    
-    public void incExplored(int exp){
+
+    public void incExplored(int exp) {
         exploredNodes += exp;
     }
-    
-    public void targetCheck(NodeImpl node){
+
+    public void targetCheck(NodeImpl node) {
         targetCheck++;
         layer.markCheckedPoint(node);
     }
@@ -82,6 +83,12 @@ public class Context {
     public long getDelay() {
         return delay;
     }
-    
-    
+
+    public boolean isStop() {
+        return stop;
+    }
+
+    public void setStop(boolean stop) {
+        this.stop = stop;
+    }
 }

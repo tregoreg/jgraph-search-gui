@@ -81,7 +81,11 @@ public class MapPanel extends JLayeredPane {
         searchLayer.updateLayer();
     }
     
-    public void addStatsListener(StatsListener listener){
+    public void stopSearch(){
+        searchLayer.stopSearch();
+    }
+    
+    public void addStatsListener(AlgorithmListener listener){
         searchLayer.addStatsListener(listener);
     }
 

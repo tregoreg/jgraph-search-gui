@@ -124,6 +124,11 @@ public class SearchLayer extends BufferedPanel {
         }
     }
 
+    void stopSearch() {
+        System.out.println("Stopping search");
+        NodeImpl.getContext().setStop(true);
+    }
+
     private class HighlightThread extends Thread {
 
         private NodeImpl start;
@@ -142,8 +147,8 @@ public class SearchLayer extends BufferedPanel {
             repaint();
         }
     }
-    
-    public void markCheckedPoint(final NodeImpl point){
+
+    public void markCheckedPoint(final NodeImpl point) {
         highlightPoint(point, visited);
     }
 
@@ -222,7 +227,8 @@ public class SearchLayer extends BufferedPanel {
     private void runSearch(NodeImpl source, NodeImpl target, AbstractAlgorithm algorithm) {
         Context ctx = new Context(visInfo.getNodes(), source, target, this, delay);
         NodeImpl.setContext(ctx);
-
+        fireAlgEvent(AlgorithmEvents.STARTED);
+        System.out.println("starting search");
         AlgorithmRunner thread = new AlgorithmRunner(ctx, algorithm);
         thread.setPriority(Thread.MIN_PRIORITY);
         thread.start();
@@ -232,7 +238,6 @@ public class SearchLayer extends BufferedPanel {
         } catch (InterruptedException e) {
             Exceptions.printStackTrace(e);
         }
-        searchFinished = true;
     }
 
     private void drawPoint(NodeImpl node, BufferedImage shape) {
@@ -250,15 +255,32 @@ public class SearchLayer extends BufferedPanel {
         }
     }
 
-    public void addStatsListener(StatsListener listener) {
-        statListeners.add(StatsListener.class, listener);
+    public void addStatsListener(AlgorithmListener listener) {
+        statListeners.add(AlgorithmListener.class, listener);
     }
 
     public void fireStatsChanged(HashMap<String, Double> stats) {
         if (statListeners != null) {
-            StatsListener[] list = statListeners.getListeners(StatsListener.class);
-            for (StatsListener l : list) {
+            AlgorithmListener[] list = statListeners.getListeners(AlgorithmListener.class);
+            for (AlgorithmListener l : list) {
                 l.statsChanged(stats);
+            }
+        }
+    }
+
+    public void fireAlgEvent(AlgorithmEvents type) {
+        if (statListeners != null) {
+            AlgorithmListener[] list = statListeners.getListeners(AlgorithmListener.class);
+            for (AlgorithmListener l : list) {
+                switch (type) {
+                    case STARTED:
+                        l.searchStarted();
+                        break;
+                    case FINISHED:
+                        l.searchFinished();
+                        break;
+
+                }
             }
         }
     }
@@ -310,6 +332,8 @@ public class SearchLayer extends BufferedPanel {
                     fireStatsChanged(stats);
                     highlightPoint(from, startPoint);
                     highlightPoint(to, endPoint);
+                    searchFinished = true;
+                    fireAlgEvent(AlgorithmEvents.FINISHED);
                 }
             });
 
@@ -323,5 +347,4 @@ public class SearchLayer extends BufferedPanel {
     public void setDelay(long delay) {
         this.delay = delay;
     }
-    
 }

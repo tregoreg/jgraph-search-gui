@@ -7,7 +7,11 @@ import java.util.HashMap;
  *
  * @author Tomas Barton
  */
-public interface StatsListener extends EventListener {
+public interface AlgorithmListener extends EventListener {
+    
+    public void searchStarted();
+    
+    public void searchFinished();
 
     public void statsChanged(HashMap<String, Double> stats);
 }
