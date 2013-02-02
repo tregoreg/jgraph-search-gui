@@ -122,7 +122,7 @@ public class NodeImpl implements Node {
             }
         }
         try {
-            Thread.sleep(0L);
+            Thread.sleep(context.getDelay());
         } catch (InterruptedException e) {
             Exceptions.printStackTrace(e);
         }

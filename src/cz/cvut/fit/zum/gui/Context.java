@@ -17,8 +17,9 @@ public class Context {
     private int expandCalls;
     private int exploredNodes;
     private int targetCheck;
+    private long delay;
 
-    public Context(List<NodeImpl> nodes, NodeImpl startNode, NodeImpl endNode, SearchLayer layer) {
+    public Context(List<NodeImpl> nodes, NodeImpl startNode, NodeImpl endNode, SearchLayer layer, long delay) {
         this.nodes = nodes;
         this.layer = layer;
         this.startNode = startNode;
@@ -26,6 +27,7 @@ public class Context {
         this.expandCalls = 0;
         this.exploredNodes = 0;
         this.targetCheck = 0;
+        this.delay = delay;
     }
 
     public Node getStartNode() {
@@ -75,6 +77,10 @@ public class Context {
 
     public int getTargetCheck() {
         return targetCheck;
+    }
+
+    public long getDelay() {
+        return delay;
     }
     
     

@@ -16,13 +16,17 @@ import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JSlider;
+import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
  * @author Tomas Barton
  */
 public class AppPanel extends JPanel implements StatsListener {
-
+    
     private static final long serialVersionUID = -8338182648645369875L;
     private JButton resetButton;
     private JPanel buttonPanel;
@@ -36,14 +40,15 @@ public class AppPanel extends JPanel implements StatsListener {
     private String frmExpand;
     private String frmDist;
     private JButton test1;
-
+    private JSlider delaySlider;
+    
     public AppPanel(Nodes nodes) {
         initComponents(nodes);
     }
-
+    
     private void initComponents(Nodes nodes) {
         buttonPanel = new JPanel();
-
+        
         setLayout(new GridBagLayout());
         GridBagConstraints mapConstraint = new GridBagConstraints();
         mapConstraint.gridx = 0;
@@ -54,7 +59,7 @@ public class AppPanel extends JPanel implements StatsListener {
         mapConstraint.weighty = 1.0D;
         mapPanel = new MapPanel(nodes.getNodes());
         add(mapPanel, mapConstraint);
-
+        
         GridBagConstraints buttonPanelConstraint = new GridBagConstraints();
         buttonPanelConstraint.gridx = 0;
         buttonPanelConstraint.gridy = 0;
@@ -63,12 +68,12 @@ public class AppPanel extends JPanel implements StatsListener {
         buttonPanelConstraint.weightx = 1.0D;
         buttonPanelConstraint.weighty = 0.0D;
         buttonPanelConstraint.anchor = 26;
-
+        
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 5));
-
+        
         add(buttonPanel, buttonPanelConstraint);
         resetButton = new JButton("Reset");
-
+        
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -76,7 +81,7 @@ public class AppPanel extends JPanel implements StatsListener {
             }
         });
         buttonPanel.add(resetButton);
-
+        
         algBox = new JComboBox();
         AlgorithmFactory af = AlgorithmFactory.getDefault();
         List<String> providers = af.getProviders();
@@ -92,7 +97,7 @@ public class AppPanel extends JPanel implements StatsListener {
         });
         //set current algorithm
         mapPanel.algorithmChanged(algBox.getSelectedItem().toString());
-
+        
         frmNodes = "Explored nodes: %d";
         lbNodes = new JLabel(String.format(frmNodes, 0));
         frmExpand = "Expanded nodes: %d (%2.1f%%)";
@@ -104,23 +109,33 @@ public class AppPanel extends JPanel implements StatsListener {
         statsPanel.add(lbNodes);
         statsPanel.add(lbExpand);
         statsPanel.add(lbDist);
-
+        
         buttonPanel.add(statsPanel);
         mapPanel.addStatsListener(this);
         validate();
-
+        
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
                 // This is only called when the user releases the mouse button.
                 mapPanel.updateSize(getSize());
-
+                
             }
         });
         
+        delaySlider = new JSlider(SwingConstants.HORIZONTAL, 0, 2000, 500);
+        delaySlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (!delaySlider.getValueIsAdjusting()) {
+                    mapPanel.setDelay((long) delaySlider.getValue());
+                }
+            }
+        });
+        buttonPanel.add(delaySlider);
+        
         test1 = new JButton("Test 1");
         test1.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 mapPanel.test1Search();
@@ -128,7 +143,7 @@ public class AppPanel extends JPanel implements StatsListener {
         });
         buttonPanel.add(test1);
     }
-
+    
     @Override
     public void statsChanged(HashMap<String, Double> stats) {
         double v = stats.get("explored");

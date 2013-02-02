@@ -42,6 +42,7 @@ public class SearchLayer extends BufferedPanel {
     private AbstractAlgorithm alg;
     private transient EventListenerList statListeners = new EventListenerList();
     private HashMap<String, Double> stats = new HashMap<String, Double>();
+    private long delay;
 
     public SearchLayer(Dimension dim, final VisInfo visInfo) {
         setSize(dim);
@@ -219,7 +220,7 @@ public class SearchLayer extends BufferedPanel {
     }
 
     private void runSearch(NodeImpl source, NodeImpl target, AbstractAlgorithm algorithm) {
-        Context ctx = new Context(visInfo.getNodes(), source, target, this);
+        Context ctx = new Context(visInfo.getNodes(), source, target, this, delay);
         NodeImpl.setContext(ctx);
 
         AlgorithmRunner thread = new AlgorithmRunner(ctx, algorithm);
@@ -314,4 +315,13 @@ public class SearchLayer extends BufferedPanel {
 
         }
     }
+
+    public long getDelay() {
+        return delay;
+    }
+
+    public void setDelay(long delay) {
+        this.delay = delay;
+    }
+    
 }

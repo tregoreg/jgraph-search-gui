@@ -88,4 +88,8 @@ public class MapPanel extends JLayeredPane {
     void test1Search() {
         searchLayer.search(visInfo.getNode(1118), visInfo.getNode(636));
     }
+    
+    public void setDelay(long delay){
+        searchLayer.setDelay(delay);
+    }
 }
