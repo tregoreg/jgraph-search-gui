@@ -1,7 +1,6 @@
 package cz.cvut.fit.zum.gui;
 
 import cz.cvut.fit.zum.AlgorithmFactory;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -11,6 +10,7 @@ import java.awt.event.ComponentEvent;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import cz.cvut.fit.zum.data.Nodes;
+import java.awt.Insets;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.BoxLayout;
@@ -42,6 +42,7 @@ public class AppPanel extends JPanel implements AlgorithmListener {
     private String frmDist;
     private JButton test1;
     private JSlider delaySlider;
+    private JLabel lbAlg;
 
     public AppPanel(Nodes nodes) {
         initComponents(nodes);
@@ -69,25 +70,32 @@ public class AppPanel extends JPanel implements AlgorithmListener {
         buttonPanelConstraint.weightx = 1.0D;
         buttonPanelConstraint.weighty = 0.0D;
         buttonPanelConstraint.anchor = GridBagConstraints.LAST_LINE_END;
-        
+
         initButtonPanel();
         add(buttonPanel, buttonPanelConstraint);
     }
 
     private void initButtonPanel() {
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 5));
+        buttonPanel.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.weightx = 1.0D;
+        c.weighty = 1.0D;
+        c.insets = new Insets(5, 5, 5, 5);
         //stop button
         stopButton = new JButton("Stop");
         stopButton.setEnabled(false);
         stopButton.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 stopButton.setEnabled(false);
                 mapPanel.stopSearch();
             }
         });
-        buttonPanel.add(stopButton);
+        c.gridx = 0;
+        c.gridy = 0;
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.LINE_START;
+        buttonPanel.add(stopButton, c);
         //reset button
         resetButton = new JButton("Reset");
         resetButton.addActionListener(new ActionListener() {
@@ -96,15 +104,21 @@ public class AppPanel extends JPanel implements AlgorithmListener {
                 mapPanel.resetPath();
             }
         });
-        buttonPanel.add(resetButton);
+        c.gridy = 1;
+        buttonPanel.add(resetButton, c);
 
+        lbAlg = new JLabel("Algorithm:");
+        c.gridx = 1;
+        c.gridy = 0;
+        buttonPanel.add(lbAlg, c);
         algBox = new JComboBox();
         AlgorithmFactory af = AlgorithmFactory.getDefault();
         List<String> providers = af.getProviders();
         for (String p : providers) {
             algBox.addItem(p);
         }
-        buttonPanel.add(algBox);
+        c.gridy = 1;
+        buttonPanel.add(algBox, c);
         algBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -114,9 +128,9 @@ public class AppPanel extends JPanel implements AlgorithmListener {
         //set current algorithm
         mapPanel.algorithmChanged(algBox.getSelectedItem().toString());
 
-        frmNodes = "Explored nodes: %d";
+        frmNodes = "Explored nodes: %4d";
         lbNodes = new JLabel(String.format(frmNodes, 0));
-        frmExpand = "Expanded nodes: %d (%2.1f%%)";
+        frmExpand = "Expanded nodes: %d (%4.1f%%)";
         lbExpand = new JLabel(String.format(frmExpand, 0, 0.0));
         frmDist = "Distance: %10.2f";
         lbDist = new JLabel(String.format(frmDist, 0.0));
@@ -125,8 +139,11 @@ public class AppPanel extends JPanel implements AlgorithmListener {
         statsPanel.add(lbNodes);
         statsPanel.add(lbExpand);
         statsPanel.add(lbDist);
-
-        buttonPanel.add(statsPanel);
+        c.gridx = 2;
+        c.gridy = 0;
+        c.fill = GridBagConstraints.BOTH;
+        c.insets = new Insets(5, 5, 5, 5);
+        buttonPanel.add(statsPanel, c);
         mapPanel.addStatsListener(this);
         validate();
 
@@ -148,7 +165,15 @@ public class AppPanel extends JPanel implements AlgorithmListener {
                 }
             }
         });
-        buttonPanel.add(delaySlider);
+        lbAlg = new JLabel("Delay:");
+        c.fill = GridBagConstraints.NONE;
+        c.gridx = 3;
+        c.gridy = 0;
+        buttonPanel.add(lbAlg, c);
+
+        c.gridx = 3;
+        c.gridy = 1;
+        buttonPanel.add(delaySlider, c);
         mapPanel.setDelay((long) delaySlider.getValue());
 
         test1 = new JButton("Test 1");
@@ -158,7 +183,9 @@ public class AppPanel extends JPanel implements AlgorithmListener {
                 mapPanel.test1Search();
             }
         });
-        buttonPanel.add(test1);
+        c.gridx = 4;
+        c.gridy = 1;
+        buttonPanel.add(test1, c);
     }
 
     @Override
@@ -175,7 +202,7 @@ public class AppPanel extends JPanel implements AlgorithmListener {
     public void searchStarted() {
         System.out.println("enabling button");
         stopButton.setEnabled(true);
-        System.out.println("state "+stopButton.isEnabled());
+        System.out.println("state " + stopButton.isEnabled());
     }
 
     @Override
