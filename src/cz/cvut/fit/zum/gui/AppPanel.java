@@ -40,6 +40,7 @@ public class AppPanel extends JPanel implements AlgorithmListener {
     private String frmNodes;
     private String frmExpand;
     private String frmDist;
+    private String frmDelay;
     private JButton test1;
     private JSlider delaySlider;
     private JLabel lbAlg;
@@ -163,18 +164,20 @@ public class AppPanel extends JPanel implements AlgorithmListener {
                 if (!delaySlider.getValueIsAdjusting()) {
                     mapPanel.setDelay((long) delaySlider.getValue());
                 }
+                lbAlg.setText(String.format(frmDelay, (int) delaySlider.getValue()));
             }
         });
-        lbAlg = new JLabel("Delay:");
-        c.fill = GridBagConstraints.NONE;
-        c.gridx = 3;
-        c.gridy = 0;
-        buttonPanel.add(lbAlg, c);
-
         c.gridx = 3;
         c.gridy = 1;
         buttonPanel.add(delaySlider, c);
         mapPanel.setDelay((long) delaySlider.getValue());
+
+        frmDelay = "Delay: %4d ms";
+        lbAlg = new JLabel(String.format(frmDelay, (int) delaySlider.getValue()));
+        c.fill = GridBagConstraints.NONE;
+        c.gridx = 3;
+        c.gridy = 0;
+        buttonPanel.add(lbAlg, c);
 
         test1 = new JButton("Test 1");
         test1.addActionListener(new ActionListener() {
