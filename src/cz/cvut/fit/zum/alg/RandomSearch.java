@@ -5,7 +5,9 @@ import java.util.List;
 import cz.cvut.fit.zum.api.Node;
 import cz.cvut.fit.zum.api.UninformedSearch;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -18,8 +20,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AbstractAlgorithm.class, position = 100)
 public class RandomSearch extends AbstractAlgorithm implements UninformedSearch {
 
-    private HashSet<Node> blacklist;
-    private List<Node> queue;
+    private HashSet<Node> closed;
+    private List<Node> opened;
 
     @Override
     public String getName() {
@@ -28,21 +30,18 @@ public class RandomSearch extends AbstractAlgorithm implements UninformedSearch 
 
     @Override
     public List<Node> findPath(Node startNode) {
-        queue = new ArrayList<Node>();
-        blacklist = new HashSet<Node>();
+        opened = Collections.synchronizedList(new LinkedList<Node>());
+        closed = new HashSet<Node>();
         List<Node> path = new ArrayList<Node>();
 
         expand(startNode);
-        Node current = random(queue);
+        Node current = random(opened);
 
-        blacklist.add(current);
+        closed.add(current);
         while (!current.isTarget()) {
-
-            if (!blacklist.contains(current)) {
-                expand(current);
-            }
-            blacklist.add(current);
-            current = random(queue);
+            expand(current);
+            closed.add(current);
+            current = random(opened);
         }
         /**
          * @TODO return shortest path
@@ -50,11 +49,11 @@ public class RandomSearch extends AbstractAlgorithm implements UninformedSearch 
         return path;
     }
 
-    private void expand(Node current) {
+    private synchronized void expand(Node current) {
         List<Node> list = current.expand();
         for (Node n : list) {
-            if (!blacklist.contains(n)) {
-                queue.add(n);
+            if (!closed.contains(n)) {
+                opened.add(n);
             }
         }
     }
@@ -68,7 +67,12 @@ public class RandomSearch extends AbstractAlgorithm implements UninformedSearch 
     private Node random(List<Node> list) {
         int min = 0;
         int max = list.size();
+        
+        if (max == 1) {
+            return list.remove(0);
+        }
         int num = min + (int) (Math.random() * ((max - min)));
+        
         //we want to remove explored nodes
         return list.remove(num);
     }
