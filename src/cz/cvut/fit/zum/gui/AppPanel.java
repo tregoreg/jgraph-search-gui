@@ -157,7 +157,7 @@ public class AppPanel extends JPanel implements AlgorithmListener {
             }
         });
 
-        delaySlider = new JSlider(SwingConstants.HORIZONTAL, 0, 200, 10);
+        delaySlider = new JSlider(SwingConstants.HORIZONTAL, 0, 200, 3);
         delaySlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
