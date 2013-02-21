@@ -153,7 +153,7 @@ public class NodeImpl implements Node {
 
     @Override
     public int hashCode() {
-        return (int) getX() * 1000 + (int) getY();
+        return getId();
     }
 
     @Override
