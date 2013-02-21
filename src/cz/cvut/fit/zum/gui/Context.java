@@ -1,15 +1,20 @@
 package cz.cvut.fit.zum.gui;
 
+import cz.cvut.fit.zum.api.AbstractAlgorithm;
+import cz.cvut.fit.zum.api.InformedSearch;
 import java.util.List;
 import cz.cvut.fit.zum.api.Node;
+import cz.cvut.fit.zum.api.UninformedSearch;
 import cz.cvut.fit.zum.data.NodeImpl;
+import javax.swing.SwingWorker;
 
 /**
  *
  * @author Tomas Barton
  */
-public class Context {
+public class Context extends SwingWorker<Void, HighlightTask> {
 
+    private AbstractAlgorithm algorithm;
     private final List<NodeImpl> nodes;
     private final NodeImpl startNode;
     private final NodeImpl endNode;
@@ -19,8 +24,10 @@ public class Context {
     private int targetCheck;
     private long delay;
     private boolean stop = false;
+    private List<Node> path;
 
-    public Context(List<NodeImpl> nodes, NodeImpl startNode, NodeImpl endNode, SearchLayer layer, long delay) {
+    public Context(AbstractAlgorithm algorithm, List<NodeImpl> nodes, NodeImpl startNode, NodeImpl endNode, SearchLayer layer, long delay) {
+        this.algorithm = algorithm;
         this.nodes = nodes;
         this.layer = layer;
         this.startNode = startNode;
@@ -51,8 +58,14 @@ public class Context {
         return id == this.endNode.getId();
     }
 
+    /**
+     * Delayed painting
+     *
+     * @param start
+     * @param end
+     */
     public void highlightEdge(NodeImpl start, NodeImpl end) {
-        layer.higlightEdge(start, end);
+        publish(new HighlightEdge(layer, start, end));
     }
 
     public void expandCalled() {
@@ -69,13 +82,13 @@ public class Context {
 
     public void incExplored(int exp) {
         exploredNodes += exp;
-        layer.repaint(); //after exploring some node we repaint the layer
+        
     }
 
     public void targetCheck(NodeImpl node) {
         targetCheck++;
-       if (node.getId() != startNode.getId()) {
-            layer.markCheckedPoint(node);
+        if (node.getId() != startNode.getId()) {
+            publish(new HighlightCheckedPoint(layer, node));
         }
     }
 
@@ -93,5 +106,50 @@ public class Context {
 
     public void setStop(boolean stop) {
         this.stop = stop;
+    }
+
+    @Override
+    protected Void doInBackground() throws Exception {
+
+        if (algorithm instanceof UninformedSearch) {
+            path = algorithm.findPath(startNode);
+        } else if (algorithm instanceof InformedSearch) {
+            path = algorithm.findPath(startNode, endNode);
+        } else {
+            throw new RuntimeException("Algorithm must implement either UninformedSearch or InformedSearch");
+        }
+
+        layer.searchFinished = true;
+        stop = true;
+
+        // searchFinished = true;
+        layer.fireAlgEvent(AlgorithmEvents.FINISHED);
+
+        return null;
+    }
+
+    @Override
+    protected void process(List<HighlightTask> pairs) {
+        while (!pairs.isEmpty()) {
+            HighlightTask task = pairs.remove(0);
+            task.process();
+        }
+        layer.repaint(); //after exploring some node we repaint the layer
+        layer.updateStats(this);
+    }
+
+    @Override
+    protected void done() {
+        layer.highlightPoint(startNode, layer.startPoint);
+        layer.highlightPoint(endNode, layer.endPoint);
+        double dist = layer.highlightPath(path);
+        double expanded = getExpandCalls();
+        double cov = expanded / (double) layer.visInfo.getNodesCount() * 100;
+        layer.stats.put("explored", (double) getExploredNodes());
+        layer.stats.put("expanded", expanded);
+        layer.stats.put("coverage", cov);
+        layer.stats.put("distance", dist);
+        layer.fireStatsChanged(layer.stats);
+        layer.repaint();
     }
 }

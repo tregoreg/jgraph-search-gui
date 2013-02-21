@@ -10,17 +10,12 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
-import javax.swing.SwingUtilities;
 import cz.cvut.fit.zum.api.AbstractAlgorithm;
-import cz.cvut.fit.zum.api.InformedSearch;
-import cz.cvut.fit.zum.api.UninformedSearch;
 import cz.cvut.fit.zum.api.Node;
 import cz.cvut.fit.zum.data.NodeImpl;
 import cz.cvut.fit.zum.VisInfo;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import javax.swing.event.EventListenerList;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -30,19 +25,19 @@ public class SearchLayer extends BufferedPanel {
 
     private static final long serialVersionUID = 7263174864182674953L;
     private NodeImpl from, to;
-    private BufferedImage startPoint;
-    private BufferedImage endPoint;
-    private BufferedImage visited;
-    private VisInfo visInfo;
+    protected BufferedImage startPoint;
+    protected BufferedImage endPoint;
+    protected BufferedImage visited;
+    protected VisInfo visInfo;
     private AffineTransform at;
     private NodeImpl node;
     private Shape line;
     private Color pathColor;
     private Color edgeColor;
-    private boolean searchFinished = false;
+    protected boolean searchFinished = false;
     private AbstractAlgorithm alg;
     private transient EventListenerList statListeners = new EventListenerList();
-    private HashMap<String, Double> stats = new HashMap<String, Double>();
+    protected HashMap<String, Double> stats = new HashMap<String, Double>();
     private long delay;
 
     public SearchLayer(Dimension dim, final VisInfo visInfo) {
@@ -171,33 +166,11 @@ public class SearchLayer extends BufferedPanel {
         highlightPoint(source, startPoint);
         highlightPoint(target, endPoint);
         repaint();
-        final Context ctx = new Context(visInfo.getNodes(), source, target, this, delay);
+        final Context ctx = new Context(algorithm, visInfo.getNodes(), source, target, this, delay);
         NodeImpl.setContext(ctx);
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-
         fireAlgEvent(AlgorithmEvents.STARTED);
-        System.out.println("starting search from " + source.getId() + " to " + target.getId());
-        System.out.println("thred cnt: "+Thread.activeCount());
-        AlgorithmRunner thread = new AlgorithmRunner(ctx, algorithm);
-        thread.setPriority(Thread.MIN_PRIORITY);
-
-        MonitorThread monitor = new MonitorThread(ctx);
-        monitor.setPriority(Thread.NORM_PRIORITY);
-        searchFinished = false;
-        monitor.start();
-        thread.start();
-        long timeout = 2000;
-        try {
-            thread.join(timeout);
-            monitor.join(timeout);
-        } catch (InterruptedException e) {
-            Exceptions.printStackTrace(e);
-        }
-
+        //System.out.println("starting search from " + source.getId() + " to " + target.getId());
+        ctx.execute();
     }
 
     private void drawPoint(NodeImpl node, BufferedImage shape) {
@@ -212,7 +185,6 @@ public class SearchLayer extends BufferedPanel {
     @Override
     protected void drawComponent(Graphics2D g) {
         //nothing to do
-        System.out.println("drawin component");
         highlightPoint(from, startPoint);
         highlightPoint(to, endPoint);
         if (from != null && to != null && alg != null) {
@@ -265,74 +237,12 @@ public class SearchLayer extends BufferedPanel {
         this.delay = delay;
     }
 
-    private class AlgorithmRunner extends Thread implements Runnable {
-
-        private AbstractAlgorithm algorithm;
-        private List<Node> path = null;
-        private Context ctx;
-
-        public AlgorithmRunner(Context ctx, AbstractAlgorithm algorithm) {
-            this.algorithm = algorithm;
-            this.ctx = ctx;
-        }
-
-        @Override
-        public void run() {
-            if (algorithm instanceof UninformedSearch) {
-                path = algorithm.findPath(ctx.getStartNode());
-            } else if (algorithm instanceof InformedSearch) {
-                path = algorithm.findPath(ctx.getStartNode(), ctx.getTargetNode());
-            } else {
-                throw new RuntimeException("Algorithm must implement either UninformedSearch or InformedSearch");
-            }
-
-            searchFinished = true;
-            fireAlgEvent(AlgorithmEvents.FINISHED);
-
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    highlightPoint(from, startPoint);
-                    highlightPoint(to, endPoint);
-                    double dist = highlightPath(path);
-                    double expanded = ctx.getExpandCalls();
-                    double cov = expanded / (double) visInfo.getNodesCount() * 100;
-                    stats.put("explored", (double) ctx.getExploredNodes());
-                    stats.put("expanded", expanded);
-                    stats.put("coverage", cov);
-                    stats.put("distance", dist);
-                    fireStatsChanged(stats);
-                    repaint();
-                }
-            });
-
-        }
-    }
-
-    private class MonitorThread extends Thread implements Runnable {
-
-        private Context ctx;
-
-        public MonitorThread(Context ctx) {
-            this.ctx = ctx;
-        }
-
-        @Override
-        public void run() {
-            while (!searchFinished) {
-                double expanded = ctx.getExpandCalls();
-                double cov = expanded / (double) visInfo.getNodesCount() * 100;
-                stats.put("explored", (double) ctx.getExploredNodes());
-                stats.put("expanded", expanded);
-                stats.put("coverage", cov);
-                fireStatsChanged(stats);
-                try {
-                    Thread.sleep(ctx.getDelay());
-                } catch (InterruptedException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
-            }
-            System.out.println("monitor finished");
-        }
+    protected void updateStats(Context ctx) {
+        double expanded = ctx.getExpandCalls();
+        double cov = expanded / (double) visInfo.getNodesCount() * 100;
+        stats.put("explored", (double) ctx.getExploredNodes());
+        stats.put("expanded", expanded);
+        stats.put("coverage", cov);
+        fireStatsChanged(stats);
     }
 }
