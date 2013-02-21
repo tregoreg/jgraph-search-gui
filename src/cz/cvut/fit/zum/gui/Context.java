@@ -106,6 +106,9 @@ public class Context extends SwingWorker<Void, HighlightTask> {
 
     public void setStop(boolean stop) {
         this.stop = stop;
+        if(stop){
+            cancel(true);
+        }
     }
 
     @Override

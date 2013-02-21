@@ -42,7 +42,7 @@ public abstract class BufferedPanel extends JPanel {
 
     public void rescale(Dimension dim) {
         if (!getSize().equals(dim)) {
-            System.out.println(getSize() +" vs "+dim);
+            //System.out.println(getSize() +" vs "+dim);
             this.setSize(dim);
             setPreferredSize(getSize());
             setMinimumSize(getSize());

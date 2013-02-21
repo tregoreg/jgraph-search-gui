@@ -39,6 +39,7 @@ public class SearchLayer extends BufferedPanel {
     private transient EventListenerList statListeners = new EventListenerList();
     protected HashMap<String, Double> stats = new HashMap<String, Double>();
     private long delay;
+    private Context ctx;
 
     public SearchLayer(Dimension dim, final VisInfo visInfo) {
         setSize(dim);
@@ -54,6 +55,8 @@ public class SearchLayer extends BufferedPanel {
                     if (searchFinished) {
                         updateLayer(); //clean canvas
                         searchFinished = false;
+                    } else {
+                        stopSearch();
                     }
                     final NodeImpl n = node;
                     highlightPoint(n, startPoint);
@@ -111,7 +114,12 @@ public class SearchLayer extends BufferedPanel {
 
     void stopSearch() {
         System.out.println("Stopping search");
-        NodeImpl.getContext().setStop(true);
+        Context context = NodeImpl.getContext();
+        if (context != null) {
+            context.setStop(true);
+        }
+        updateLayer();
+        repaint();
     }
 
     public void markCheckedPoint(final NodeImpl point) {
@@ -166,9 +174,13 @@ public class SearchLayer extends BufferedPanel {
         highlightPoint(source, startPoint);
         highlightPoint(target, endPoint);
         repaint();
-        final Context ctx = new Context(algorithm, visInfo.getNodes(), source, target, this, delay);
+        if (ctx != null) {
+            ctx.cancel(true);
+        }
+        ctx = new Context(algorithm, visInfo.getNodes(), source, target, this, delay);
         NodeImpl.setContext(ctx);
         fireAlgEvent(AlgorithmEvents.STARTED);
+        System.out.println("Starting search...");
         //System.out.println("starting search from " + source.getId() + " to " + target.getId());
         ctx.execute();
     }

@@ -130,10 +130,12 @@ public class NodeImpl implements Node {
             throw new RuntimeException("Algorithm stopped by the user");
         }
         context.incExplored(result.size());
+        long delay = context.getDelay();
         try {
-            Thread.sleep(context.getDelay());
+            Thread.sleep(delay);
         } catch (InterruptedException e) {
-            Exceptions.printStackTrace(e);
+            System.out.println("Search interrupted.");
+           // Exceptions.printStackTrace(e);
         }
         
         return result;
