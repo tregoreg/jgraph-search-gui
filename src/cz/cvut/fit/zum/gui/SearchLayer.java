@@ -113,9 +113,9 @@ public class SearchLayer extends BufferedPanel {
     }
 
     void stopSearch() {
-        System.out.println("Stopping search");
         Context context = NodeImpl.getContext();
         if (context != null) {
+            System.out.println("Stopping search");
             context.setStop(true);
         }
         updateLayer();
@@ -199,9 +199,6 @@ public class SearchLayer extends BufferedPanel {
         //nothing to do
         highlightPoint(from, startPoint);
         highlightPoint(to, endPoint);
-        if (from != null && to != null && alg != null) {
-            runSearch(from, to, alg);
-        }
     }
 
     public void addStatsListener(AlgorithmListener listener) {

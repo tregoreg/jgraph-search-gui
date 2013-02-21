@@ -154,5 +154,6 @@ public class Context extends SwingWorker<Void, HighlightTask> {
         layer.stats.put("distance", dist);
         layer.fireStatsChanged(layer.stats);
         layer.repaint();
+        System.out.println("Search finished");
     }
 }

@@ -3,6 +3,7 @@ package cz.cvut.fit.zum.gui;
 import cz.cvut.fit.zum.AlgorithmFactory;
 import cz.cvut.fit.zum.VisInfo;
 import cz.cvut.fit.zum.api.AbstractAlgorithm;
+import cz.cvut.fit.zum.data.NodeImpl;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -17,14 +18,14 @@ import javax.swing.JLayeredPane;
 public class MapPanel extends JLayeredPane {
 
     private static final long serialVersionUID = 1L;
-    private List<cz.cvut.fit.zum.data.NodeImpl> nodes;
+    private List<NodeImpl> nodes;
     private MapLayer mapLayer;
     private GridLayer gridLayer;
     private SearchLayer searchLayer;
     private Dimension size = new Dimension(0, 0);
     private VisInfo visInfo;
 
-    public MapPanel(List<cz.cvut.fit.zum.data.NodeImpl> nodes) {
+    public MapPanel(List<NodeImpl> nodes) {
         this.nodes = nodes;
         initializeComponents();
     }
@@ -79,6 +80,8 @@ public class MapPanel extends JLayeredPane {
     public void resetPath() {
         searchLayer.clearSelection();
         searchLayer.updateLayer();
+        gridLayer.updateLayer();
+        mapLayer.updateLayer();
     }
     
     public void stopSearch(){

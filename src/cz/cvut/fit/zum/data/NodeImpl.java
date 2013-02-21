@@ -135,7 +135,7 @@ public class NodeImpl implements Node {
             Thread.sleep(delay);
         } catch (InterruptedException e) {
             System.out.println("Search interrupted.");
-           // Exceptions.printStackTrace(e);
+            //Exceptions.printStackTrace(e);
         }
         
         return result;
