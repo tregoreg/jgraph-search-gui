@@ -22,7 +22,7 @@ import org.openide.util.Exceptions;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {"edge"})
 @XmlRootElement(name = "Node")
-public class NodeImpl implements Node {
+public final class NodeImpl implements Node {
 
     @XmlElement(name = "Edge", required = true)
     protected List<Edge> edge;
