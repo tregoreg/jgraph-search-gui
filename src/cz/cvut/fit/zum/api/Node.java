@@ -46,6 +46,10 @@ public abstract interface Node {
     @Override
     public abstract boolean equals(Object other);
     
+    
+    @Override
+    public int hashCode();
+    
     /**
      * 
      * @return coordinate of a point
