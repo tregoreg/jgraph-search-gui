@@ -4,6 +4,7 @@ package cz.cvut.fit.zum.api;
  *
  * @author Tomas Barton
  */
+import java.awt.geom.Point2D;
 import java.util.List;
 
 public abstract interface Node {
@@ -44,4 +45,10 @@ public abstract interface Node {
      */
     @Override
     public abstract boolean equals(Object other);
+    
+    /**
+     * 
+     * @return coordinate of a point
+     */
+    public abstract Point2D getPoint();
 }

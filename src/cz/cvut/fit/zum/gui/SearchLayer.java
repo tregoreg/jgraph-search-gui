@@ -106,7 +106,7 @@ public class SearchLayer extends BufferedPanel {
         fireStatsChanged(stats);
     }
 
-    protected void higlightEdge(final NodeImpl start, final NodeImpl end) {
+    protected void higlightEdge(final Node start, final Node end) {
         graphics.setColor(edgeColor);
         line = new Line2D.Double(start.getPoint(), end.getPoint());
         graphics.draw(line);
@@ -126,7 +126,7 @@ public class SearchLayer extends BufferedPanel {
         highlightPoint(point, visited);
     }
 
-    public void highlightPoint(final NodeImpl point, BufferedImage shape) {
+    public void highlightPoint(final Node point, BufferedImage shape) {
         drawPoint(point, shape);
     }
 
@@ -135,14 +135,14 @@ public class SearchLayer extends BufferedPanel {
             return 0;
         }
         graphics.setColor(pathColor);
-        NodeImpl prev, next;
+        Node prev, next;
         int i = 0;
         int length = path.size();
         double distance = 0;
         do {
-            prev = (NodeImpl) path.get(i++);
+            prev = path.get(i++);
             if (i < length) {
-                next = (NodeImpl) path.get(i);
+                next = path.get(i);
                 line = new Line2D.Double(prev.getPoint(), next.getPoint());
                 graphics.draw(line);
                 distance += euclideanDist(prev, next);
@@ -152,7 +152,7 @@ public class SearchLayer extends BufferedPanel {
         return distance;
     }
 
-    public double euclideanDist(NodeImpl a, NodeImpl b) {
+    public double euclideanDist(Node a, Node b) {
         double dist = 0;
         double x, y;
         x = a.getX() - b.getX();
@@ -185,7 +185,7 @@ public class SearchLayer extends BufferedPanel {
         ctx.execute();
     }
 
-    private void drawPoint(NodeImpl node, BufferedImage shape) {
+    private void drawPoint(Node node, BufferedImage shape) {
         if (node != null) {
             at.setToIdentity();
             at.translate(node.getPoint().getX() - visInfo.getCircleDiam(), node.getPoint().getY() - visInfo.getCircleDiam());
