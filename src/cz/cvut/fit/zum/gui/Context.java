@@ -25,6 +25,7 @@ public class Context extends SwingWorker<Void, HighlightTask> {
     private long delay;
     private boolean stop = false;
     private List<Node> path;
+    private long startTime, endTime;
 
     public Context(AbstractAlgorithm algorithm, List<NodeImpl> nodes, NodeImpl startNode, NodeImpl endNode, SearchLayer layer, long delay) {
         this.algorithm = algorithm;
@@ -82,7 +83,7 @@ public class Context extends SwingWorker<Void, HighlightTask> {
 
     public void incExplored(int exp) {
         exploredNodes += exp;
-        
+
     }
 
     public void targetCheck(NodeImpl node) {
@@ -106,14 +107,14 @@ public class Context extends SwingWorker<Void, HighlightTask> {
 
     public void setStop(boolean stop) {
         this.stop = stop;
-        if(stop){
+        if (stop) {
             cancel(true);
         }
     }
 
     @Override
     protected Void doInBackground() throws Exception {
-
+        startTime = System.currentTimeMillis();
         if (algorithm instanceof UninformedSearch) {
             path = algorithm.findPath(startNode);
         } else if (algorithm instanceof InformedSearch) {
@@ -125,7 +126,7 @@ public class Context extends SwingWorker<Void, HighlightTask> {
         layer.searchFinished = true;
         stop = true;
 
-        // searchFinished = true;
+        endTime = System.currentTimeMillis();
         layer.fireAlgEvent(AlgorithmEvents.FINISHED);
 
         return null;
@@ -148,12 +149,14 @@ public class Context extends SwingWorker<Void, HighlightTask> {
         double dist = layer.highlightPath(path);
         double expanded = getExpandCalls();
         double cov = expanded / (double) layer.visInfo.getNodesCount() * 100;
+        long time = endTime - startTime;
         layer.stats.put("explored", (double) getExploredNodes());
         layer.stats.put("expanded", expanded);
         layer.stats.put("coverage", cov);
         layer.stats.put("distance", dist);
         layer.fireStatsChanged(layer.stats);
         layer.repaint();
-        System.out.println("Search finished");
+
+        System.out.println("Search finished, time = " + time + " ms");
     }
 }
