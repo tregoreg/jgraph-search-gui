@@ -37,10 +37,12 @@ public class AppPanel extends JPanel implements AlgorithmListener {
     private JLabel lbNodes;
     private JLabel lbExpand;
     private JLabel lbDist;
+    private JLabel lbTime;
     private String frmNodes;
     private String frmExpand;
     private String frmDist;
     private String frmDelay;
+    private String frmTime;
     private JButton test1;
     private JButton test2;
     private JButton test3;
@@ -138,11 +140,14 @@ public class AppPanel extends JPanel implements AlgorithmListener {
         lbExpand = new JLabel(String.format(frmExpand, 0, 0.0));
         frmDist = "Distance: %10.2f";
         lbDist = new JLabel(String.format(frmDist, 0.0));
+        frmTime = "Time: %10.0f ms";
+        lbTime = new JLabel(String.format(frmTime, 0.0));
         statsPanel = new JPanel();
         statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.PAGE_AXIS));
         statsPanel.add(lbNodes);
         statsPanel.add(lbExpand);
         statsPanel.add(lbDist);
+        statsPanel.add(lbTime);
         c.gridx = 2;
         c.gridy = 0;
         c.fill = GridBagConstraints.BOTH;
@@ -236,6 +241,8 @@ public class AppPanel extends JPanel implements AlgorithmListener {
         lbExpand.setText(String.format(frmExpand, (int) v, stats.get("coverage")));
         v = stats.get("distance");
         lbDist.setText(String.format(frmDist, v));
+        v = stats.get("time");
+        lbTime.setText(String.format(frmTime, v));
     }
 
     @Override

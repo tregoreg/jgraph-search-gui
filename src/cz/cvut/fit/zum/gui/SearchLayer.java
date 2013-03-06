@@ -103,6 +103,7 @@ public class SearchLayer extends BufferedPanel {
         stats.put("expanded", 0.0);
         stats.put("coverage", 0.0);
         stats.put("distance", 0.0);
+        stats.put("time", 0.0);
         fireStatsChanged(stats);
     }
 
@@ -252,6 +253,7 @@ public class SearchLayer extends BufferedPanel {
         stats.put("explored", (double) ctx.getExploredNodes());
         stats.put("expanded", expanded);
         stats.put("coverage", cov);
+        stats.put("time", (double) ctx.getTime());
         fireStatsChanged(stats);
     }
 }

@@ -115,6 +115,7 @@ public class Context extends SwingWorker<Void, HighlightTask> {
     @Override
     protected Void doInBackground() throws Exception {
         startTime = System.currentTimeMillis();
+        endTime = 0;
         if (algorithm instanceof UninformedSearch) {
             path = algorithm.findPath(startNode);
         } else if (algorithm instanceof InformedSearch) {
@@ -154,9 +155,17 @@ public class Context extends SwingWorker<Void, HighlightTask> {
         layer.stats.put("expanded", expanded);
         layer.stats.put("coverage", cov);
         layer.stats.put("distance", dist);
+        layer.stats.put("time", (double) time);
         layer.fireStatsChanged(layer.stats);
         layer.repaint();
 
         System.out.println("Search finished, time = " + time + " ms");
+    }
+
+    public long getTime() {
+        if (endTime > 0) {
+            return endTime - startTime;
+        }
+        return System.currentTimeMillis() - startTime;
     }
 }
