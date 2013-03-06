@@ -17,7 +17,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = AbstractAlgorithm.class, position = 100)
+@ServiceProvider(service = AbstractAlgorithm.class, position = 1)
 public class RandomSearch extends AbstractAlgorithm implements UninformedSearch {
 
     private HashSet<Node> closed;

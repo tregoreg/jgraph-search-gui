@@ -1,6 +1,7 @@
 package cz.cvut.fit.zum.gui;
 
 import cz.cvut.fit.zum.api.AbstractAlgorithm;
+import cz.cvut.fit.zum.api.Algorithm;
 import cz.cvut.fit.zum.api.InformedSearch;
 import java.util.List;
 import cz.cvut.fit.zum.api.Node;
@@ -14,7 +15,7 @@ import javax.swing.SwingWorker;
  */
 public class Context extends SwingWorker<Void, HighlightTask> {
 
-    private AbstractAlgorithm algorithm;
+    private Algorithm algorithm;
     private final List<NodeImpl> nodes;
     private final NodeImpl startNode;
     private final NodeImpl endNode;
@@ -117,9 +118,9 @@ public class Context extends SwingWorker<Void, HighlightTask> {
         startTime = System.currentTimeMillis();
         endTime = 0;
         if (algorithm instanceof UninformedSearch) {
-            path = algorithm.findPath(startNode);
+            path = ((UninformedSearch) algorithm).findPath(startNode);
         } else if (algorithm instanceof InformedSearch) {
-            path = algorithm.findPath(startNode, endNode);
+            path = ((InformedSearch) algorithm).findPath(startNode, endNode);
         } else {
             throw new RuntimeException("Algorithm must implement either UninformedSearch or InformedSearch");
         }
