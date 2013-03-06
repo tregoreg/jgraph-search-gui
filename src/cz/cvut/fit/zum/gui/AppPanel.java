@@ -42,6 +42,9 @@ public class AppPanel extends JPanel implements AlgorithmListener {
     private String frmDist;
     private String frmDelay;
     private JButton test1;
+    private JButton test2;
+    private JButton test3;
+    private JButton test4;
     private JSlider delaySlider;
     private JLabel lbAlg;
 
@@ -187,8 +190,42 @@ public class AppPanel extends JPanel implements AlgorithmListener {
             }
         });
         c.gridx = 4;
-        c.gridy = 1;
+        c.gridy = 0;
         buttonPanel.add(test1, c);
+
+        test2 = new JButton("Test 2");
+        test2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mapPanel.test2Search();
+            }
+        });
+        c.gridx = 4;
+        c.gridy = 1;
+        buttonPanel.add(test2, c);
+
+        test3 = new JButton("Test 3");
+        test3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mapPanel.test3Search();
+            }
+        });
+        c.gridx = 5;
+        c.gridy = 0;
+        buttonPanel.add(test3, c);
+
+
+        test4 = new JButton("Test 4");
+        test4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mapPanel.test4Search();
+            }
+        });
+        c.gridx = 5;
+        c.gridy = 1;
+        buttonPanel.add(test4, c);
     }
 
     @Override

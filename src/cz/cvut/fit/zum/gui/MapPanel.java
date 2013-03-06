@@ -83,20 +83,32 @@ public class MapPanel extends JLayeredPane {
         gridLayer.updateLayer();
         mapLayer.updateLayer();
     }
-    
-    public void stopSearch(){
+
+    public void stopSearch() {
         searchLayer.stopSearch();
     }
-    
-    public void addStatsListener(AlgorithmListener listener){
+
+    public void addStatsListener(AlgorithmListener listener) {
         searchLayer.addStatsListener(listener);
     }
 
     void test1Search() {
         searchLayer.search(visInfo.getNode(1118), visInfo.getNode(636));
     }
-    
-    public void setDelay(long delay){
+
+    void test2Search() {
+        searchLayer.search(visInfo.getNode(5), visInfo.getNode(1863));
+    }
+
+    void test3Search() {
+        searchLayer.search(visInfo.getNode(163), visInfo.getNode(315));
+    }
+
+    void test4Search() {
+        searchLayer.search(visInfo.getNode(287), visInfo.getNode(338));
+    }
+
+    public void setDelay(long delay) {
         searchLayer.setDelay(delay);
     }
 }
