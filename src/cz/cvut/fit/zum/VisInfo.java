@@ -20,17 +20,15 @@ public class VisInfo {
     private int circleWidth = 4;
     private double circleDiam;
     private Color nodeColor = new Color(0.0f, 0.0f, 0.0f, 0.3f);  // semi-transparent
-    private List<NodeImpl> nodes;
     private static double MIN_DIST = 0.2;
     private double mx, my, dx, dy;
     private double minDistance, distance;
     private int nodeId;
 
-    public VisInfo(List<NodeImpl> nodes) {
+    public VisInfo() {
         tranformation = new AffineTransform();
         tranformation.scale(1, 1);
         circleDiam = circleWidth / 2;
-        setNodes(nodes);
     }
 
     /**
@@ -71,10 +69,7 @@ public class VisInfo {
     }
 
     public int getNodesCount() {
-        if (nodes == null) {
-            return 0;
-        }
-        return nodes.size();
+        return StateSpace.nodesCount();
     }
 
     public void computePositions(Dimension size) {
@@ -119,18 +114,14 @@ public class VisInfo {
     }
 
     public List<NodeImpl> getNodes() {
-        return nodes;
+        return StateSpace.getNodes();
     }
 
     public NodeImpl getNode(int id) {
-        return nodes.get(id);
+        return StateSpace.getNode(id);
     }
 
     public boolean hasNodes() {
-        return this.nodes != null;
-    }
-
-    private void setNodes(List<NodeImpl> nodes) {
-        this.nodes = nodes;
+        return StateSpace.nodesCount() > 0;
     }
 }

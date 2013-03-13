@@ -3,7 +3,6 @@ package cz.cvut.fit.zum.gui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.JPanel;
-import cz.cvut.fit.zum.data.Nodes;
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -22,11 +21,11 @@ public class AppPanel extends JPanel {
     private MinVertexTab vertexTab;
     private Dimension mapSize;
 
-    public AppPanel(Nodes nodes) {
-        initComponents(nodes);
+    public AppPanel() {
+        initComponents();
     }
 
-    private void initComponents(Nodes nodes) {
+    private void initComponents() {
         jTabs = new javax.swing.JTabbedPane();
 
         setLayout(new GridBagLayout());
@@ -47,7 +46,7 @@ public class AppPanel extends JPanel {
         mapConstraint.anchor = GridBagConstraints.LINE_START;
         mapConstraint.weightx = 1.0D;
         mapConstraint.weighty = 1.0D;
-        mapPanel = new MapPanel(nodes.getNodes());
+        mapPanel = new MapPanel();
 
         searchTab = new SearchTab(mapPanel);
         jTabs.add("Graph Search", searchTab);

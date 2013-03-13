@@ -8,13 +8,15 @@ import javax.xml.bind.annotation.XmlRegistry;
  */
 @XmlRegistry
 public class ObjectFactory {
+    
+    private static int idCnt = 0;
 
     public Nodes createNodes() {
         return new Nodes();
     }
 
     public Edge createEdge() {
-        return new Edge();
+        return new Edge(idCnt++);
     }
 
     public NodeImpl createNode() {

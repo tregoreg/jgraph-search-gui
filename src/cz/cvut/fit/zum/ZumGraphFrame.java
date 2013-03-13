@@ -31,9 +31,10 @@ public class ZumGraphFrame extends JFrame {
             System.out.println("Problem with loadGraphFromFile");
             throw new RuntimeException("Problem with loadGraphFromFile");
         }
-        System.out.println("Loaded " + nodes.getNodes().size() + " nodes");
+        StateSpace.setNodes(nodes.getNodes());
+        System.out.println("Loaded " + StateSpace.nodesCount() + " nodes");
 
-        appPanel = new AppPanel(nodes);
+        appPanel = new AppPanel();
         add(appPanel);
 
         this.addComponentListener(new ComponentAdapter() {

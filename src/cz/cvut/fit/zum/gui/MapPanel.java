@@ -18,21 +18,19 @@ import javax.swing.JLayeredPane;
 public class MapPanel extends JLayeredPane {
 
     private static final long serialVersionUID = 1L;
-    private List<NodeImpl> nodes;
     private MapLayer mapLayer;
     private GridLayer gridLayer;
     private SearchLayer searchLayer;
     private Dimension size = new Dimension(0, 0);
     private VisInfo visInfo;
 
-    public MapPanel(List<NodeImpl> nodes) {
-        this.nodes = nodes;
+    public MapPanel() {
         initializeComponents();
     }
 
     private void initializeComponents() {
         Dimension minSize = new Dimension(800, 800);
-        visInfo = new VisInfo(nodes);
+        visInfo = new VisInfo();
         visInfo.computePositions(minSize);
 
         setLayout(new GridBagLayout());
