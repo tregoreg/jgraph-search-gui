@@ -14,6 +14,7 @@ import cz.cvut.fit.zum.api.AbstractAlgorithm;
 import cz.cvut.fit.zum.api.Node;
 import cz.cvut.fit.zum.data.NodeImpl;
 import cz.cvut.fit.zum.VisInfo;
+import cz.cvut.fit.zum.api.ga.AbstractEvolution;
 import java.util.HashMap;
 import javax.swing.event.EventListenerList;
 
@@ -36,10 +37,12 @@ public class SearchLayer extends BufferedPanel {
     private Color edgeColor;
     protected boolean searchFinished = false;
     private AbstractAlgorithm alg;
+    private AbstractEvolution evolution;
     private transient EventListenerList statListeners = new EventListenerList();
     protected HashMap<String, Double> stats = new HashMap<String, Double>();
     private long delay;
     private Context ctx;
+    private VertexContex vctx;
 
     public SearchLayer(Dimension dim, final VisInfo visInfo) {
         setSize(dim);
@@ -255,5 +258,15 @@ public class SearchLayer extends BufferedPanel {
         stats.put("coverage", cov);
         stats.put("time", (double) ctx.getTime());
         fireStatsChanged(stats);
+    }
+
+    void vertexCover() {
+        if (evolution == null){
+            
+            return;
+        }
+                
+        vctx = new VertexContex(evolution);
+        vctx.execute();
     }
 }

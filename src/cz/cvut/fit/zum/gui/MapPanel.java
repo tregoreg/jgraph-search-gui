@@ -3,12 +3,10 @@ package cz.cvut.fit.zum.gui;
 import cz.cvut.fit.zum.AlgorithmFactory;
 import cz.cvut.fit.zum.VisInfo;
 import cz.cvut.fit.zum.api.AbstractAlgorithm;
-import cz.cvut.fit.zum.data.NodeImpl;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Rectangle;
-import java.util.List;
 import javax.swing.JLayeredPane;
 
 /**
@@ -114,5 +112,9 @@ public class MapPanel extends JLayeredPane {
 
     public void setDelay(long delay) {
         searchLayer.setDelay(delay);
+    }
+    
+    public void startVertexCover(){
+        searchLayer.vertexCover();
     }
 }

@@ -50,7 +50,7 @@ public class AppPanel extends JPanel {
 
         searchTab = new SearchTab(mapPanel);
         jTabs.add("Graph Search", searchTab);
-        vertexTab = new MinVertexTab();
+        vertexTab = new MinVertexTab(mapPanel);
         jTabs.add("Min-Vertex Cover", vertexTab);
 
         add(jTabs, tabsPanelConstraint);
