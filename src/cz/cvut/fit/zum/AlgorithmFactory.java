@@ -26,6 +26,5 @@ public class AlgorithmFactory extends ServiceFactory<AbstractAlgorithm> {
         for (AbstractAlgorithm c : list) {
             providers.put(c.getName(), c);
         }
-        sort();
     }
 }
