@@ -67,7 +67,13 @@ public class MapPanel extends JLayeredPane {
         mapLayer.rescale(size);
         gridLayer.rescale(size);
         searchLayer.rescale(size);
-        setPreferredSize(dim);
+        setPreferredSize(size);
+    }
+
+    protected void updateLayer() {
+        searchLayer.updateLayer();
+        gridLayer.updateLayer();
+        mapLayer.updateLayer();
     }
 
     public void algorithmChanged(String algName) {

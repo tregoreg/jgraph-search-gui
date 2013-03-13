@@ -1,63 +1,45 @@
 package cz.cvut.fit.zum.gui;
 
-import cz.cvut.fit.zum.AlgorithmFactory;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import cz.cvut.fit.zum.data.Nodes;
-import java.awt.Insets;
-import java.util.HashMap;
-import java.util.List;
-import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JSlider;
-import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import java.awt.Dimension;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import javax.swing.JTabbedPane;
 
 /**
  *
  * @author Tomas Barton
  */
-public class AppPanel extends JPanel implements AlgorithmListener {
+public class AppPanel extends JPanel {
 
     private static final long serialVersionUID = -8338182648645369875L;
-    private JButton stopButton;
-    private JButton resetButton;
-    private JPanel buttonPanel;
-    private JComboBox algBox;
+    private JTabbedPane jTabs;
     private MapPanel mapPanel;
-    private JPanel statsPanel;
-    private JLabel lbNodes;
-    private JLabel lbExpand;
-    private JLabel lbDist;
-    private JLabel lbTime;
-    private String frmNodes;
-    private String frmExpand;
-    private String frmDist;
-    private String frmDelay;
-    private String frmTime;
-    private JButton test1;
-    private JButton test2;
-    private JButton test3;
-    private JButton test4;
-    private JSlider delaySlider;
-    private JLabel lbAlg;
+    private SearchTab searchTab;
+    private MinVertexTab vertexTab;
+    private Dimension mapSize;
 
     public AppPanel(Nodes nodes) {
         initComponents(nodes);
     }
 
     private void initComponents(Nodes nodes) {
-        buttonPanel = new JPanel();
+        jTabs = new javax.swing.JTabbedPane();
 
         setLayout(new GridBagLayout());
+
+        GridBagConstraints tabsPanelConstraint = new GridBagConstraints();
+        tabsPanelConstraint.gridx = 0;
+        tabsPanelConstraint.gridy = 0;
+        tabsPanelConstraint.gridwidth = 2;
+        tabsPanelConstraint.fill = GridBagConstraints.HORIZONTAL;
+        tabsPanelConstraint.weightx = 1.0D;
+        tabsPanelConstraint.weighty = 0.0D;
+        tabsPanelConstraint.anchor = GridBagConstraints.NORTHWEST;
+
         GridBagConstraints mapConstraint = new GridBagConstraints();
         mapConstraint.gridx = 0;
         mapConstraint.gridy = 1;
@@ -66,192 +48,28 @@ public class AppPanel extends JPanel implements AlgorithmListener {
         mapConstraint.weightx = 1.0D;
         mapConstraint.weighty = 1.0D;
         mapPanel = new MapPanel(nodes.getNodes());
+
+        searchTab = new SearchTab(mapPanel);
+        jTabs.add("Graph Search", searchTab);
+        vertexTab = new MinVertexTab();
+        jTabs.add("Min-Vertex Cover", vertexTab);
+
+        add(jTabs, tabsPanelConstraint);
         add(mapPanel, mapConstraint);
 
-        GridBagConstraints buttonPanelConstraint = new GridBagConstraints();
-        buttonPanelConstraint.gridx = 0;
-        buttonPanelConstraint.gridy = 0;
-        buttonPanelConstraint.gridwidth = 2;
-        buttonPanelConstraint.fill = GridBagConstraints.BOTH;
-        buttonPanelConstraint.weightx = 1.0D;
-        buttonPanelConstraint.weighty = 0.0D;
-        buttonPanelConstraint.anchor = GridBagConstraints.LAST_LINE_END;
-
-        initButtonPanel();
-        add(buttonPanel, buttonPanelConstraint);
-    }
-
-    private void initButtonPanel() {
-        buttonPanel.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        c.weightx = 1.0D;
-        c.weighty = 1.0D;
-        c.insets = new Insets(5, 5, 5, 5);
-        //stop button
-        stopButton = new JButton("Stop");
-        stopButton.setEnabled(false);
-        stopButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                stopButton.setEnabled(false);
-                mapPanel.stopSearch();
-            }
-        });
-        c.gridx = 0;
-        c.gridy = 0;
-        c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.LINE_START;
-        buttonPanel.add(stopButton, c);
-        //reset button
-        resetButton = new JButton("Reset");
-        resetButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mapPanel.resetPath();
-            }
-        });
-        c.gridy = 1;
-        buttonPanel.add(resetButton, c);
-
-        lbAlg = new JLabel("Algorithm:");
-        c.gridx = 1;
-        c.gridy = 0;
-        buttonPanel.add(lbAlg, c);
-        algBox = new JComboBox();
-        AlgorithmFactory af = AlgorithmFactory.getDefault();
-        List<String> providers = af.getProviders();
-        for (String p : providers) {
-            algBox.addItem(p);
-        }
-        c.gridy = 1;
-        buttonPanel.add(algBox, c);
-        algBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mapPanel.algorithmChanged(algBox.getSelectedItem().toString());
-            }
-        });
-        //set current algorithm
-        mapPanel.algorithmChanged(algBox.getSelectedItem().toString());
-
-        frmNodes = "Explored nodes: %4d";
-        lbNodes = new JLabel(String.format(frmNodes, 0));
-        frmExpand = "Expanded nodes: %d (%4.1f%%)";
-        lbExpand = new JLabel(String.format(frmExpand, 0, 0.0));
-        frmDist = "Distance: %10.2f";
-        lbDist = new JLabel(String.format(frmDist, 0.0));
-        frmTime = "Time: %10.0f ms";
-        lbTime = new JLabel(String.format(frmTime, 0.0));
-        statsPanel = new JPanel();
-        statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.PAGE_AXIS));
-        statsPanel.add(lbNodes);
-        statsPanel.add(lbExpand);
-        statsPanel.add(lbDist);
-        statsPanel.add(lbTime);
-        c.gridx = 2;
-        c.gridy = 0;
-        c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets(5, 5, 5, 5);
-        buttonPanel.add(statsPanel, c);
-        mapPanel.addStatsListener(this);
-        validate();
 
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
                 // This is only called when the user releases the mouse button.
-                mapPanel.updateSize(getSize());
-
+                mapPanel.updateSize(mapSize);
+                mapPanel.updateLayer();
             }
         });
-
-        delaySlider = new JSlider(SwingConstants.HORIZONTAL, 0, 200, 3);
-        delaySlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (!delaySlider.getValueIsAdjusting()) {
-                    mapPanel.setDelay((long) delaySlider.getValue());
-                }
-                lbAlg.setText(String.format(frmDelay, (int) delaySlider.getValue()));
-            }
-        });
-        c.gridx = 3;
-        c.gridy = 1;
-        buttonPanel.add(delaySlider, c);
-        mapPanel.setDelay((long) delaySlider.getValue());
-
-        frmDelay = "Delay: %4d ms";
-        lbAlg = new JLabel(String.format(frmDelay, (int) delaySlider.getValue()));
-        c.fill = GridBagConstraints.NONE;
-        c.gridx = 3;
-        c.gridy = 0;
-        buttonPanel.add(lbAlg, c);
-
-        test1 = new JButton("Test 1");
-        test1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mapPanel.test1Search();
-            }
-        });
-        c.gridx = 4;
-        c.gridy = 0;
-        buttonPanel.add(test1, c);
-
-        test2 = new JButton("Test 2");
-        test2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mapPanel.test2Search();
-            }
-        });
-        c.gridx = 4;
-        c.gridy = 1;
-        buttonPanel.add(test2, c);
-
-        test3 = new JButton("Test 3");
-        test3.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mapPanel.test3Search();
-            }
-        });
-        c.gridx = 5;
-        c.gridy = 0;
-        buttonPanel.add(test3, c);
-
-
-        test4 = new JButton("Test 4");
-        test4.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mapPanel.test4Search();
-            }
-        });
-        c.gridx = 5;
-        c.gridy = 1;
-        buttonPanel.add(test4, c);
     }
 
-    @Override
-    public void statsChanged(HashMap<String, Double> stats) {
-        double v = stats.get("explored");
-        lbNodes.setText(String.format(frmNodes, (int) v));
-        v = stats.get("expanded");
-        lbExpand.setText(String.format(frmExpand, (int) v, stats.get("coverage")));
-        v = stats.get("distance");
-        lbDist.setText(String.format(frmDist, v));
-        v = stats.get("time");
-        lbTime.setText(String.format(frmTime, v));
-    }
-
-    @Override
-    public void searchStarted() {
-        stopButton.setEnabled(true);
-    }
-
-    @Override
-    public void searchFinished() {
-        stopButton.setEnabled(false);
+    public void updateSize(Dimension dim) {
+        mapSize = new Dimension(dim.width, dim.height - 150); // height of tabs
+        mapPanel.setSize(mapSize);
     }
 }

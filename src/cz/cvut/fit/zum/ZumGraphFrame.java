@@ -40,7 +40,7 @@ public class ZumGraphFrame extends JFrame {
             @Override
             public void componentResized(ComponentEvent e) {
                 // This is only called when the user releases the mouse button.
-                appPanel.setSize(getSize());
+                appPanel.updateSize(getSize());
             }
         });
     }
