@@ -1,8 +1,10 @@
 package cz.cvut.fit.zum.gui;
 
 import cz.cvut.fit.zum.AlgorithmFactory;
+import cz.cvut.fit.zum.EvolutionFactory;
 import cz.cvut.fit.zum.VisInfo;
 import cz.cvut.fit.zum.api.AbstractAlgorithm;
+import cz.cvut.fit.zum.api.ga.AbstractEvolution;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -76,6 +78,13 @@ public class MapPanel extends JLayeredPane {
         AbstractAlgorithm alg = AlgorithmFactory.getDefault().getProvider(algName);
         if (alg != null) {
             searchLayer.algorithmChanged(alg);
+        }
+    }
+    
+    public void vertexCoverAlgorithmChanged(String algName){
+        AbstractEvolution alg = EvolutionFactory.getDefault().getProvider(algName);
+        if(alg != null){
+            searchLayer.vertexAlgorithmChanged(alg);
         }
     }
 

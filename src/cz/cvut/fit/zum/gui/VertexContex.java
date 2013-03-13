@@ -1,6 +1,7 @@
 package cz.cvut.fit.zum.gui;
 
 import cz.cvut.fit.zum.api.ga.AbstractEvolution;
+import java.util.List;
 import javax.swing.SwingWorker;
 
 /**
@@ -10,13 +11,44 @@ import javax.swing.SwingWorker;
 public class VertexContex extends SwingWorker<Void, HighlightTask> {
 
     private AbstractEvolution evolution;
+    private long startTime, endTime;
+    private SearchLayer layer;
 
-    public VertexContex(AbstractEvolution evolution) {
+    public VertexContex(SearchLayer layer, AbstractEvolution evolution) {
         this.evolution = evolution;
+        this.layer = layer;
     }
 
     @Override
     protected Void doInBackground() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        startTime = System.currentTimeMillis();
+        endTime = startTime;
+        evolution.run();
+
+        endTime = System.currentTimeMillis();
+        return null;
+    }
+
+    @Override
+    protected void process(List<HighlightTask> pairs) {
+        while (!pairs.isEmpty()) {
+            HighlightTask task = pairs.remove(0);
+            task.process();
+        }
+        layer.repaint(); //after exploring some node we repaint the layer
+        //  layer.updateStats(this);
+    }
+
+    @Override
+    protected void done() {
+        long time = endTime - startTime;
+        System.out.println("Evolution time = " + time + " ms");
+    }
+
+    public long getTime() {
+        if (endTime > 0) {
+            return endTime - startTime;
+        }
+        return System.currentTimeMillis() - startTime;
     }
 }

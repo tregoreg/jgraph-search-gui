@@ -1,5 +1,8 @@
 package cz.cvut.fit.zum.api.ga;
 
+import cz.cvut.fit.zum.api.Node;
+import java.util.List;
+
 /**
  *
  * @author Tomas Barton
@@ -23,6 +26,16 @@ public abstract class AbstractEvolution implements Runnable {
      * Probability of cross
      */
     protected double crossoverProbability = 0.5;
+    
+    protected List<Node> nodes = null;
+
+    public List<Node> getNodes() {
+        return nodes;
+    }
+
+    public void setNodes(List<Node> nodes) {
+        this.nodes = nodes;
+    }
 
     public abstract String getName();
 

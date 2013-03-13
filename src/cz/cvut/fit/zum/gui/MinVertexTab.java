@@ -1,11 +1,15 @@
 package cz.cvut.fit.zum.gui;
 
+import cz.cvut.fit.zum.AlgorithmFactory;
+import cz.cvut.fit.zum.EvolutionFactory;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 /**
@@ -15,6 +19,7 @@ import javax.swing.JPanel;
 public class MinVertexTab extends JPanel {
 
     private JButton btnStart;
+    private JComboBox evolutionBox;
     private MapPanel mapPanel;
 
     public MinVertexTab(MapPanel mapPanel) {
@@ -33,15 +38,35 @@ public class MinVertexTab extends JPanel {
         c.gridy = 0;
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.LINE_START;
+
+        //start button
         btnStart = new JButton("Start");
         btnStart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // stopButton.setEnabled(false);
-                mapPanel.stopSearch();
+                mapPanel.vertexCoverAlgorithmChanged(evolutionBox.getSelectedItem().toString());
             }
         });
         add(btnStart, c);
+
+        //evolution alg. box
+        evolutionBox = new JComboBox();
+        EvolutionFactory ef = EvolutionFactory.getDefault();
+        List<String> providers = ef.getProviders();
+        for (String p : providers) {
+            evolutionBox.addItem(p);
+        }
+        c.gridy = 1;
+        this.add(evolutionBox, c);
+        evolutionBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mapPanel.vertexCoverAlgorithmChanged(evolutionBox.getSelectedItem().toString());
+            }
+        });
+
+        //set current algorithm
+        //mapPanel.vertexCoverAlgorithmChanged(evolutionBox.getSelectedItem().toString());
 
     }
 }

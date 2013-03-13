@@ -12,7 +12,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import cz.cvut.fit.zum.api.Node;
 import cz.cvut.fit.zum.gui.Context;
-import org.openide.util.Exceptions;
 
 /**
  * Represents inner information about nodes
@@ -93,6 +92,7 @@ public final class NodeImpl implements Node {
         this.y = value;
     }
 
+    @Override
     public Point2D getPoint() {
         return point;
     }
@@ -126,7 +126,7 @@ public final class NodeImpl implements Node {
             }
         }
         //if we have to stop
-        if(context.isStop()){
+        if (context.isStop()) {
             throw new RuntimeException("Algorithm stopped by the user");
         }
         context.incExplored(result.size());
@@ -137,7 +137,29 @@ public final class NodeImpl implements Node {
             System.out.println("Search interrupted.");
             //Exceptions.printStackTrace(e);
         }
-        
+
+        return result;
+    }
+
+    /**
+     * Internal method, expanding nodes without counting expand calls
+     *
+     * @param nodes
+     * @return
+     */
+    protected List<Node> fastExpand(List<NodeImpl> nodes) {
+        List<Edge> edges = getEdge();
+        ArrayList<Node> result = new ArrayList<Node>();
+        NodeImpl node2;
+        for (Edge e : edges) {
+            int toId = e.getToId();
+            node2 = nodes.get(toId);
+            if (node2 == null) {
+                System.err.println("Node with id " + toId + " is not in node list!");
+            } else {
+                result.add(node2);
+            }
+        }
         return result;
     }
 

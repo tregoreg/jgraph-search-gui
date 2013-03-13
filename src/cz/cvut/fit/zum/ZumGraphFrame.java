@@ -1,5 +1,6 @@
 package cz.cvut.fit.zum;
 
+import cz.cvut.fit.zum.data.StateSpace;
 import cz.cvut.fit.zum.gui.AppPanel;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;

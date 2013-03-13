@@ -77,7 +77,6 @@ public class SearchLayer extends BufferedPanel {
                         node = null;
                         runSearch(from, to, alg);
                     }
-
                 }
             }
         });
@@ -166,12 +165,27 @@ public class SearchLayer extends BufferedPanel {
         return Math.sqrt(dist) * 100; //just random coefficient to make numbers more interesting
     }
 
+    /**
+     * Search algorithm changed
+     *
+     * @param algorithm
+     */
     public void algorithmChanged(AbstractAlgorithm algorithm) {
         this.alg = algorithm;
         if (from != null && to != null) {
             updateLayer();
             runSearch(from, to, alg);
         }
+    }
+
+    /**
+     * Evolutionary algorithm changed
+     *
+     * @param evolAlg
+     */
+    public void vertexAlgorithmChanged(AbstractEvolution evolAlg) {
+        this.evolution = evolAlg;
+        vertexCover();
     }
 
     private void runSearch(final NodeImpl source, final NodeImpl target, final AbstractAlgorithm algorithm) {
@@ -229,7 +243,6 @@ public class SearchLayer extends BufferedPanel {
                     case FINISHED:
                         l.searchFinished();
                         break;
-
                 }
             }
         }
@@ -261,12 +274,7 @@ public class SearchLayer extends BufferedPanel {
     }
 
     void vertexCover() {
-        if (evolution == null){
-            
-            return;
-        }
-                
-        vctx = new VertexContex(evolution);
+        vctx = new VertexContex(this, evolution);
         vctx.execute();
     }
 }

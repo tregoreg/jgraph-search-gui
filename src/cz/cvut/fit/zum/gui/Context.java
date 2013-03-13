@@ -116,7 +116,7 @@ public class Context extends SwingWorker<Void, HighlightTask> {
     @Override
     protected Void doInBackground() throws Exception {
         startTime = System.currentTimeMillis();
-        endTime = 0;
+        endTime = startTime;
         if (algorithm instanceof UninformedSearch) {
             path = ((UninformedSearch) algorithm).findPath(startNode);
         } else if (algorithm instanceof InformedSearch) {

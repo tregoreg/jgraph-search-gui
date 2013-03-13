@@ -25,7 +25,8 @@ public class Edge {
     @XmlAttribute(required = true)
     protected int toId;
 
-    public Edge(int id) {
+    
+    public void setId(int id){
         this.id = id;
     }
 
