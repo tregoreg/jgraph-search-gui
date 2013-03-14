@@ -147,9 +147,9 @@ public final class NodeImpl implements Node {
      * @param nodes
      * @return
      */
-    protected List<Node> fastExpand(List<NodeImpl> nodes) {
+    protected List<NodeImpl> fastExpand(List<NodeImpl> nodes) {
         List<Edge> edges = getEdge();
-        ArrayList<Node> result = new ArrayList<Node>();
+        ArrayList<NodeImpl> result = new ArrayList<NodeImpl>();
         NodeImpl node2;
         for (Edge e : edges) {
             int toId = e.getToId();

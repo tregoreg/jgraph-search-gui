@@ -1,5 +1,6 @@
 package cz.cvut.fit.zum.gui;
 
+import cz.cvut.fit.zum.VisInfo;
 import cz.cvut.fit.zum.api.AbstractAlgorithm;
 import cz.cvut.fit.zum.api.Algorithm;
 import cz.cvut.fit.zum.api.InformedSearch;
@@ -7,6 +8,9 @@ import java.util.List;
 import cz.cvut.fit.zum.api.Node;
 import cz.cvut.fit.zum.api.UninformedSearch;
 import cz.cvut.fit.zum.data.NodeImpl;
+import cz.cvut.fit.zum.data.StateSpace;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 import javax.swing.SwingWorker;
 
 /**
@@ -27,10 +31,15 @@ public class Context extends SwingWorker<Void, HighlightTask> {
     private boolean stop = false;
     private List<Node> path;
     private long startTime, endTime;
+    private BufferedImage startPoint;
+    private BufferedImage endPoint;
+    private BufferedImage visited;
+    private Color edgeColor = new Color(255, 0, 255);
 
-    public Context(AbstractAlgorithm algorithm, List<NodeImpl> nodes, NodeImpl startNode, NodeImpl endNode, SearchLayer layer, long delay) {
+    public Context(AbstractAlgorithm algorithm, NodeImpl startNode, NodeImpl endNode, SearchLayer layer, long delay) {
         this.algorithm = algorithm;
-        this.nodes = nodes;
+        VisInfo visInfo = VisInfo.getInstance();
+        this.nodes = visInfo.getNodes();
         this.layer = layer;
         this.startNode = startNode;
         this.endNode = endNode;
@@ -38,6 +47,10 @@ public class Context extends SwingWorker<Void, HighlightTask> {
         this.exploredNodes = 0;
         this.targetCheck = 0;
         this.delay = delay;
+
+        startPoint = visInfo.createCircle(Color.RED);
+        endPoint = visInfo.createCircle(Color.GREEN);
+        visited = visInfo.createCircle(new Color(215, 153, 3));
     }
 
     public Node getStartNode() {
@@ -67,7 +80,7 @@ public class Context extends SwingWorker<Void, HighlightTask> {
      * @param end
      */
     public void highlightEdge(NodeImpl start, NodeImpl end) {
-        publish(new HighlightEdge(layer, start, end));
+        publish(new HighlightEdge(layer, start, end, edgeColor));
     }
 
     public void expandCalled() {
@@ -90,7 +103,7 @@ public class Context extends SwingWorker<Void, HighlightTask> {
     public void targetCheck(NodeImpl node) {
         targetCheck++;
         if (node.getId() != startNode.getId()) {
-            publish(new HighlightCheckedPoint(layer, node));
+            publish(new HighlightPoint(layer, node, visited));
         }
     }
 
@@ -150,7 +163,7 @@ public class Context extends SwingWorker<Void, HighlightTask> {
         layer.highlightPoint(endNode, layer.endPoint);
         double dist = layer.highlightPath(path);
         double expanded = getExpandCalls();
-        double cov = expanded / (double) layer.visInfo.getNodesCount() * 100;
+        double cov = expanded / (double) StateSpace.nodesCount() * 100;
         long time = endTime - startTime;
         layer.stats.put("explored", (double) getExploredNodes());
         layer.stats.put("expanded", expanded);

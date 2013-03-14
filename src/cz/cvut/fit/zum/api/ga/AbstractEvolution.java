@@ -2,7 +2,7 @@ package cz.cvut.fit.zum.api.ga;
 
 import cz.cvut.fit.zum.data.NodeImpl;
 import cz.cvut.fit.zum.data.StateSpace;
-import cz.cvut.fit.zum.gui.VertexContext;
+import cz.cvut.fit.zum.data.VertexContext;
 import java.util.List;
 
 /**
@@ -87,14 +87,22 @@ public abstract class AbstractEvolution implements Runnable {
 
     public void setBestIndividual(AbstractIndividual best) {
         boolean covered;
-        for(NodeImpl node: nodes){
+        int numNodes = 0;
+        int id;
+        for (NodeImpl node : nodes) {
             covered = best.isVertexCovered(node.getId());
+            id = node.getId();
             //something is different, update map
-            if(covered != currentCover[node.getId()]){
+            if (covered != currentCover[id]) {
                 context.markNode(node, covered);
+                currentCover[id] = covered;
+            }
+
+            if (covered) {
+                numNodes++;
             }
             
         }
+        System.out.println("total covered nodes: "+numNodes);
     }
-    
 }

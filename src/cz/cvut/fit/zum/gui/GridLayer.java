@@ -22,9 +22,9 @@ public class GridLayer extends BufferedPanel {
     private VisInfo visInfo;
     private BufferedImage buffCircle;
 
-    public GridLayer(Dimension minSize, VisInfo vi) {
+    public GridLayer(Dimension minSize) {
         setSize(minSize);
-        this.visInfo = vi;
+        this.visInfo = VisInfo.getInstance();
         initComponents();
     }
 

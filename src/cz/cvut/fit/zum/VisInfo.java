@@ -25,11 +25,19 @@ public class VisInfo {
     private double mx, my, dx, dy;
     private double minDistance, distance;
     private int nodeId;
+    private static VisInfo instance;
 
-    public VisInfo() {
+    protected VisInfo() {
         tranformation = new AffineTransform();
         tranformation.scale(1, 1);
         circleDiam = circleWidth / 2;
+    }
+    
+    public static VisInfo getInstance(){
+        if(instance == null){
+            instance = new VisInfo();
+        }
+        return instance;
     }
 
     /**

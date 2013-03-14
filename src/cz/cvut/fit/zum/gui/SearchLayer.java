@@ -16,6 +16,7 @@ import cz.cvut.fit.zum.data.NodeImpl;
 import cz.cvut.fit.zum.VisInfo;
 import cz.cvut.fit.zum.api.ga.AbstractEvolution;
 import cz.cvut.fit.zum.api.ga.VertexCoverTask;
+import cz.cvut.fit.zum.data.StateSpace;
 import java.util.HashMap;
 import javax.swing.event.EventListenerList;
 
@@ -35,7 +36,6 @@ public class SearchLayer extends BufferedPanel {
     private NodeImpl node;
     private Shape line;
     private Color pathColor;
-    private Color edgeColor;
     protected boolean searchFinished = false;
     private AbstractAlgorithm alg;
     private AbstractEvolution evolution;
@@ -45,9 +45,9 @@ public class SearchLayer extends BufferedPanel {
     private Context ctx;
     private VertexCoverTask vctx;
 
-    public SearchLayer(Dimension dim, final VisInfo visInfo) {
+    public SearchLayer(Dimension dim) {
         setSize(dim);
-        this.visInfo = visInfo;
+        visInfo = VisInfo.getInstance();
         initComponents();
 
         addMouseListener(new MouseAdapter() {
@@ -90,7 +90,6 @@ public class SearchLayer extends BufferedPanel {
         endPoint = visInfo.createCircle(Color.GREEN);
         visited = visInfo.createCircle(new Color(215, 153, 3));
         pathColor = Color.white;
-        edgeColor = new Color(255, 0, 255);
         clearStats();
     }
 
@@ -110,8 +109,8 @@ public class SearchLayer extends BufferedPanel {
         fireStatsChanged(stats);
     }
 
-    protected void higlightEdge(final Node start, final Node end) {
-        graphics.setColor(edgeColor);
+    protected void higlightEdge(final Node start, final Node end, Color color) {
+        graphics.setColor(color);
         line = new Line2D.Double(start.getPoint(), end.getPoint());
         graphics.draw(line);
     }
@@ -124,14 +123,6 @@ public class SearchLayer extends BufferedPanel {
         }
         updateLayer();
         repaint();
-    }
-
-    public void markCheckedPoint(final NodeImpl point) {
-        highlightPoint(point, visited);
-    }
-    
-    public void markCoveredPoint(final NodeImpl point) {
-        highlightPoint(point, endPoint);
     }
 
     public void highlightPoint(final Node point, BufferedImage shape) {
@@ -200,7 +191,7 @@ public class SearchLayer extends BufferedPanel {
         if (ctx != null) {
             ctx.cancel(true);
         }
-        ctx = new Context(algorithm, visInfo.getNodes(), source, target, this, delay);
+        ctx = new Context(algorithm, source, target, this, delay);
         NodeImpl.setContext(ctx);
         fireAlgEvent(AlgorithmEvents.STARTED);
         System.out.println("Starting search...");
@@ -270,7 +261,7 @@ public class SearchLayer extends BufferedPanel {
 
     protected void updateStats(Context ctx) {
         double expanded = ctx.getExpandCalls();
-        double cov = expanded / (double) visInfo.getNodesCount() * 100;
+        double cov = expanded / (double) StateSpace.nodesCount() * 100;
         stats.put("explored", (double) ctx.getExploredNodes());
         stats.put("expanded", expanded);
         stats.put("coverage", cov);
@@ -280,6 +271,6 @@ public class SearchLayer extends BufferedPanel {
 
     void vertexCover() {
         vctx = new VertexCoverTask(this, evolution);
-      
+
     }
 }

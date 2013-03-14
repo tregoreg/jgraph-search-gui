@@ -25,12 +25,12 @@ public class MapPanel extends JLayeredPane {
     private VisInfo visInfo;
 
     public MapPanel() {
+        visInfo = VisInfo.getInstance();
         initializeComponents();
     }
 
     private void initializeComponents() {
         Dimension minSize = new Dimension(800, 800);
-        visInfo = new VisInfo();
         visInfo.computePositions(minSize);
 
         setLayout(new GridBagLayout());
@@ -45,9 +45,9 @@ public class MapPanel extends JLayeredPane {
         mapLayer = new MapLayer(minSize);
         add(mapLayer, c, 10); //back layer
         //layer with nodes and edges
-        gridLayer = new GridLayer(minSize, visInfo);
+        gridLayer = new GridLayer(minSize);
         add(gridLayer, c, 0);
-        searchLayer = new SearchLayer(minSize, visInfo);
+        searchLayer = new SearchLayer(minSize);
         add(searchLayer, c, 0);
         setPreferredSize(minSize);
         Rectangle bounds = getBounds();

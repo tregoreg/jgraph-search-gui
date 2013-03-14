@@ -1,7 +1,12 @@
-package cz.cvut.fit.zum.gui;
+package cz.cvut.fit.zum.data;
 
+import cz.cvut.fit.zum.VisInfo;
 import cz.cvut.fit.zum.api.ga.AbstractEvolution;
-import cz.cvut.fit.zum.data.NodeImpl;
+import cz.cvut.fit.zum.gui.HighlightPoint;
+import cz.cvut.fit.zum.gui.HighlightTask;
+import cz.cvut.fit.zum.gui.SearchLayer;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.util.List;
 import javax.swing.SwingWorker;
 
@@ -14,10 +19,18 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
     private AbstractEvolution evolution;
     private long startTime, endTime;
     private SearchLayer layer;
+    private BufferedImage notCovered;
+    private BufferedImage coveredPoint;
+    private BufferedImage visited;
 
     public VertexContext(SearchLayer layer, AbstractEvolution evolution) {
         this.evolution = evolution;
         this.layer = layer;
+        
+        VisInfo visInfo = VisInfo.getInstance();
+        notCovered = visInfo.createCircle(Color.RED);
+        coveredPoint = visInfo.createCircle(Color.GREEN);
+        visited = visInfo.createCircle(new Color(215, 153, 3));
     }
 
     @Override
@@ -52,8 +65,17 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
         }
         return System.currentTimeMillis() - startTime;
     }
-    
-    public void markNode(NodeImpl node, boolean covered){
-        publish(new HighlightCoveredPoint(layer, node));
+
+    public void markNode(NodeImpl node, boolean covered) {
+        if(covered){
+            publish(new HighlightPoint(layer, node, coveredPoint));
+            
+            List<NodeImpl> nn = node.fastExpand(StateSpace.getNodes());
+           
+            
+        }else{
+            publish(new HighlightPoint(layer, node, notCovered));
+        }
+        
     }
 }

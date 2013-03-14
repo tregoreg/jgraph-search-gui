@@ -1,6 +1,5 @@
 package cz.cvut.fit.zum.data;
 
-import cz.cvut.fit.zum.api.Node;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class StateSpace {
     private static void updateEdges() {
         for (int n = 0; n < nodes.size(); n++) {
             NodeImpl node = (NodeImpl) nodes.get(n);
-            List<Node> neighbours = node.fastExpand(nodes);
+            List<NodeImpl> neighbours = node.fastExpand(nodes);
             for (int s = 0; s < neighbours.size(); s++) {
                 /* Edge tmp = new Edge();
                  tmp.setFromId(node.getId());
@@ -29,7 +28,7 @@ public class StateSpace {
                  EdgeWrapper ew = new EdgeWrapper(e, tmp);*/
                 Edge edge = new Edge();
                 edge.setFromId(node.getId());
-                edge.setToId(((NodeImpl) neighbours.get(s)).getId());
+                edge.setToId(neighbours.get(s).getId());
                 if (!edges.contains(edge)) {
                     edges.add(edge);
                 }

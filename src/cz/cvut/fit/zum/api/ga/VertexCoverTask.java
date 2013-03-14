@@ -1,7 +1,7 @@
 package cz.cvut.fit.zum.api.ga;
 
 import cz.cvut.fit.zum.gui.SearchLayer;
-import cz.cvut.fit.zum.gui.VertexContext;
+import cz.cvut.fit.zum.data.VertexContext;
 
 /**
  *
