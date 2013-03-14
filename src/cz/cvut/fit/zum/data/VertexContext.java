@@ -2,11 +2,13 @@ package cz.cvut.fit.zum.data;
 
 import cz.cvut.fit.zum.VisInfo;
 import cz.cvut.fit.zum.api.ga.AbstractEvolution;
+import cz.cvut.fit.zum.gui.HighlightEdge;
 import cz.cvut.fit.zum.gui.HighlightPoint;
 import cz.cvut.fit.zum.gui.HighlightTask;
 import cz.cvut.fit.zum.gui.SearchLayer;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.HashSet;
 import java.util.List;
 import javax.swing.SwingWorker;
 
@@ -21,16 +23,20 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
     private SearchLayer layer;
     private BufferedImage notCovered;
     private BufferedImage coveredPoint;
-    private BufferedImage visited;
+    private BufferedImage reachablePoint;
+    private Color edge = Color.BLUE;
+    private HashSet<NodeImpl> cover;
+    private HashSet<NodeImpl> reachable;
 
     public VertexContext(SearchLayer layer, AbstractEvolution evolution) {
         this.evolution = evolution;
         this.layer = layer;
-        
+        cover = new HashSet<NodeImpl>(StateSpace.nodesCount());
+        reachable = new HashSet<NodeImpl>(StateSpace.nodesCount() / 2);
         VisInfo visInfo = VisInfo.getInstance();
         notCovered = visInfo.createCircle(Color.RED);
         coveredPoint = visInfo.createCircle(Color.GREEN);
-        visited = visInfo.createCircle(new Color(215, 153, 3));
+        reachablePoint = visInfo.createCircle(new Color(215, 153, 3));
     }
 
     @Override
@@ -66,16 +72,27 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
         return System.currentTimeMillis() - startTime;
     }
 
-    public void markNode(NodeImpl node, boolean covered) {
-        if(covered){
-            publish(new HighlightPoint(layer, node, coveredPoint));
-            
-            List<NodeImpl> nn = node.fastExpand(StateSpace.getNodes());
-           
-            
-        }else{
-            publish(new HighlightPoint(layer, node, notCovered));
+    public void markNode(NodeImpl from, boolean covered) {
+        if (covered) {
+            publish(new HighlightPoint(layer, from, coveredPoint));
+            cover.add(from);
+            reachable.remove(from); //remove if present
+            List<NodeImpl> nn = from.fastExpand(StateSpace.getNodes());
+            for (NodeImpl to : nn) {
+                //highlight edge
+                publish(new HighlightEdge(layer, from, to, edge));
+                //reachable nodes
+                if (!cover.contains(to)) {
+                    publish(new HighlightPoint(layer, to, reachablePoint));
+                    reachable.add(to);
+                }
+            }
+
+        } else {
+            if (!reachable.contains(from)) {
+                publish(new HighlightPoint(layer, from, notCovered));
+            }
         }
-        
+
     }
 }

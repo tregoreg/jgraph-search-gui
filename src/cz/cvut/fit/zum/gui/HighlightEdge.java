@@ -14,7 +14,7 @@ public class HighlightEdge extends HighlightTask {
     private SearchLayer layer;
     private Color color;
 
-    HighlightEdge(SearchLayer layer, NodeImpl start, NodeImpl end, Color c) {
+    public HighlightEdge(SearchLayer layer, NodeImpl start, NodeImpl end, Color c) {
         this.layer = layer;
         this.start = start;
         this.end = end;

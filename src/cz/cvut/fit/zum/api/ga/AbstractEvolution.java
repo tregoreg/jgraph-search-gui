@@ -85,7 +85,7 @@ public abstract class AbstractEvolution implements Runnable {
         this.crossoverProbability = crossoverProbability;
     }
 
-    public void setBestIndividual(AbstractIndividual best) {
+    public void updateMap(AbstractIndividual best) {
         boolean covered;
         int numNodes = 0;
         int id;
