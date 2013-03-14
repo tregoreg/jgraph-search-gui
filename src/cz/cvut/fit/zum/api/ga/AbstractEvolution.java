@@ -87,8 +87,9 @@ public abstract class AbstractEvolution implements Runnable {
 
     public void updateMap(AbstractIndividual best) {
         boolean covered;
-        int numNodes = 0;
         int id;
+        
+        context.setBestFitness(best.getFitness());
         for (NodeImpl node : nodes) {
             covered = best.isVertexCovered(node.getId());
             id = node.getId();
@@ -96,13 +97,7 @@ public abstract class AbstractEvolution implements Runnable {
             if (covered != currentCover[id]) {
                 context.markNode(node, covered);
                 currentCover[id] = covered;
-            }
-
-            if (covered) {
-                numNodes++;
-            }
-            
+            }            
         }
-        System.out.println("total covered nodes: "+numNodes);
     }
 }

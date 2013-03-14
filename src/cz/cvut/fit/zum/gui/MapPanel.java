@@ -103,6 +103,10 @@ public class MapPanel extends JLayeredPane {
         searchLayer.addStatsListener(listener);
     }
 
+    public void addEvolutionListener(EvolutionListener listener) {
+        searchLayer.addEvolutionListener(listener);
+    }
+
     void test1Search() {
         searchLayer.search(visInfo.getNode(1118), visInfo.getNode(636));
     }

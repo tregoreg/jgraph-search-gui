@@ -39,7 +39,6 @@ public class SearchLayer extends BufferedPanel {
     protected boolean searchFinished = false;
     private AbstractAlgorithm alg;
     private AbstractEvolution evolution;
-    private transient EventListenerList statListeners = new EventListenerList();
     protected HashMap<String, Double> stats = new HashMap<String, Double>();
     private long delay;
     private Context ctx;
@@ -215,35 +214,6 @@ public class SearchLayer extends BufferedPanel {
         highlightPoint(to, endPoint);
     }
 
-    public void addStatsListener(AlgorithmListener listener) {
-        statListeners.add(AlgorithmListener.class, listener);
-    }
-
-    public void fireStatsChanged(HashMap<String, Double> stats) {
-        if (statListeners != null) {
-            AlgorithmListener[] list = statListeners.getListeners(AlgorithmListener.class);
-            for (AlgorithmListener l : list) {
-                l.statsChanged(stats);
-            }
-        }
-    }
-
-    public void fireAlgEvent(AlgorithmEvents type) {
-        if (statListeners != null) {
-            AlgorithmListener[] list = statListeners.getListeners(AlgorithmListener.class);
-            for (AlgorithmListener l : list) {
-                switch (type) {
-                    case STARTED:
-                        l.searchStarted();
-                        break;
-                    case FINISHED:
-                        l.searchFinished();
-                        break;
-                }
-            }
-        }
-    }
-
     public void search(NodeImpl a, NodeImpl b) {
         from = a;
         to = b;
@@ -272,5 +242,49 @@ public class SearchLayer extends BufferedPanel {
     void vertexCover() {
         vctx = new VertexCoverTask(this, evolution);
 
+    }
+    private transient EventListenerList statListeners = new EventListenerList();
+
+    public void addStatsListener(AlgorithmListener listener) {
+        statListeners.add(AlgorithmListener.class, listener);
+    }
+
+    public void fireStatsChanged(HashMap<String, Double> stats) {
+        if (statListeners != null) {
+            AlgorithmListener[] list = statListeners.getListeners(AlgorithmListener.class);
+            for (AlgorithmListener l : list) {
+                l.statsChanged(stats);
+            }
+        }
+    }
+
+    public void fireAlgEvent(AlgorithmEvents type) {
+        if (statListeners != null) {
+            AlgorithmListener[] list = statListeners.getListeners(AlgorithmListener.class);
+            for (AlgorithmListener l : list) {
+                switch (type) {
+                    case STARTED:
+                        l.searchStarted();
+                        break;
+                    case FINISHED:
+                        l.searchFinished();
+                        break;
+                }
+            }
+        }
+    }
+    private transient EventListenerList evolListeners = new EventListenerList();
+
+    public void addEvolutionListener(EvolutionListener listener) {
+        evolListeners.add(EvolutionListener.class, listener);
+    }
+
+    public void fireEvolutionChanged(HashMap<String, Double> stats) {
+        if (evolListeners != null) {
+            EvolutionListener[] list = evolListeners.getListeners(EvolutionListener.class);
+            for (EvolutionListener l : list) {
+                l.statsChanged(stats);
+            }
+        }
     }
 }
