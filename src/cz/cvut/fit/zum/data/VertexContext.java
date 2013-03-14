@@ -30,7 +30,6 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
     private HashSet<NodeImpl> cover;
     private HashSet<NodeImpl> reachable;
     private double bestFitness;
-    
     protected HashMap<String, Double> stats = new HashMap<String, Double>();
 
     public VertexContext(SearchLayer layer, AbstractEvolution evolution) {
@@ -41,7 +40,7 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
         VisInfo visInfo = VisInfo.getInstance();
         notCovered = visInfo.createCircle(nodeColor);
         coveredPoint = visInfo.createCircle(Color.GREEN);
-        reachablePoint = visInfo.createCircle(new Color(215, 153, 3));
+        reachablePoint = visInfo.createCircle(Color.BLUE);
     }
 
     @Override
@@ -77,15 +76,22 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
         return System.currentTimeMillis() - startTime;
     }
 
-    public void markNode(NodeImpl from, boolean covered) {
+    public void markNode(NodeImpl current, boolean covered) {
         if (covered) {
-            publish(new HighlightPoint(layer, from, coveredPoint));
-            cover.add(from);
-            reachable.remove(from); //remove if present
-            List<NodeImpl> nn = from.fastExpand(StateSpace.getNodes());
+            publish(new HighlightPoint(layer, current, coveredPoint));
+            cover.add(current);
+            reachable.remove(current); //remove if present
+            List<NodeImpl> nn = current.fastExpand(StateSpace.getNodes());
             for (NodeImpl to : nn) {
                 //highlight edge
-                publish(new HighlightEdge(layer, from, to, edge));
+
+                //both edge's nodes are covered
+                if (cover.contains(to)) {
+                    publish(new HighlightEdge(layer, current, to, Color.YELLOW));
+                } else {
+                    publish(new HighlightEdge(layer, current, to, Color.GREEN));
+                }
+
                 //reachable nodes
                 if (!cover.contains(to)) {
                     publish(new HighlightPoint(layer, to, reachablePoint));
@@ -94,10 +100,29 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
             }
 
         } else {
-            cover.remove(from);
-            if (!reachable.contains(from)) {
-                publish(new HighlightPoint(layer, from, notCovered));
-            }
+            cover.remove(current);
+            //if (!reachable.contains(from)) {
+                
+                List<NodeImpl> nn = current.fastExpand(StateSpace.getNodes());
+                boolean neigourCovered = false;
+                for (NodeImpl to : nn) {                    
+                    //from is not in cover
+                    if (cover.contains(to)) {
+                        neigourCovered = true;
+                        publish(new HighlightEdge(layer, current, to, Color.GREEN));
+                    } else {
+                        publish(new HighlightEdge(layer, current, to, Color.RED));
+                    }
+                }
+                
+                if(neigourCovered){
+                    publish(new HighlightPoint(layer, current, reachablePoint));
+                }else{
+                    publish(new HighlightPoint(layer, current, notCovered));
+                    reachable.remove(current);
+                }
+                
+            //}
         }
         updateStats();
     }
@@ -108,8 +133,8 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
         stats.put("cover", covSize);
         stats.put("fitness", bestFitness);
         stats.put("coverage", cov);
-        stats.put("reached", (double)reachable.size());
-        
+        stats.put("reached", (double) reachable.size());
+
         stats.put("time", (double) getTime());
 
         layer.fireEvolutionChanged(stats);
@@ -118,6 +143,4 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
     public void setBestFitness(double bestFitness) {
         this.bestFitness = bestFitness;
     }
-    
-    
 }

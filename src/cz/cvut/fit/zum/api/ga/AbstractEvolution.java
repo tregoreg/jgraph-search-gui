@@ -31,6 +31,7 @@ public abstract class AbstractEvolution implements Runnable {
     protected List<NodeImpl> nodes = null;
     private VertexContext context;
     private boolean[] currentCover;
+    protected boolean isFinished = false;
 
     /**
      * Reference to GUI
@@ -52,6 +53,14 @@ public abstract class AbstractEvolution implements Runnable {
     }
 
     public abstract String getName();
+
+    public boolean isFinished() {
+        return isFinished;
+    }
+
+    public void setFinished(boolean isFinished) {
+        this.isFinished = isFinished;
+    }
 
     public int getGenerationSize() {
         return generationSize;
@@ -88,7 +97,7 @@ public abstract class AbstractEvolution implements Runnable {
     public void updateMap(AbstractIndividual best) {
         boolean covered;
         int id;
-        
+
         context.setBestFitness(best.getFitness());
         for (NodeImpl node : nodes) {
             covered = best.isVertexCovered(node.getId());
@@ -97,7 +106,7 @@ public abstract class AbstractEvolution implements Runnable {
             if (covered != currentCover[id]) {
                 context.markNode(node, covered);
                 currentCover[id] = covered;
-            }            
+            }
         }
     }
 }
