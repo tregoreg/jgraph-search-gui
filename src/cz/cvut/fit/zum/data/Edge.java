@@ -4,7 +4,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -16,8 +15,6 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "Edge")
 public class Edge {
 
-    @XmlTransient
-    private int id;
     @XmlAttribute(required = true)
     protected int fromId;
     @XmlAttribute(required = true)
@@ -25,10 +22,6 @@ public class Edge {
     @XmlAttribute(required = true)
     protected int toId;
 
-    
-    public void setId(int id){
-        this.id = id;
-    }
 
     public int getFromId() {
         return this.fromId;
@@ -70,8 +63,8 @@ public class Edge {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 83 * hash + this.id;
+        int hash = fromId;
+        hash = 83 * hash + toId;
         return hash;
     }
 }

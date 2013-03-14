@@ -34,6 +34,7 @@ public class StateSpace {
                 }
             }
         }
+        System.out.println("edges size: "+edges.size());
     }
 
     public static int nodesCount() {
