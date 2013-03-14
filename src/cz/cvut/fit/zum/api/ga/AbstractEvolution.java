@@ -1,6 +1,8 @@
 package cz.cvut.fit.zum.api.ga;
 
-import cz.cvut.fit.zum.api.Node;
+import cz.cvut.fit.zum.data.NodeImpl;
+import cz.cvut.fit.zum.data.StateSpace;
+import cz.cvut.fit.zum.gui.VertexContext;
 import java.util.List;
 
 /**
@@ -26,14 +28,26 @@ public abstract class AbstractEvolution implements Runnable {
      * Probability of cross
      */
     protected double crossoverProbability = 0.5;
-    
-    protected List<Node> nodes = null;
+    protected List<NodeImpl> nodes = null;
+    private VertexContext context;
+    private boolean[] currentCover;
 
-    public List<Node> getNodes() {
+    /**
+     * Reference to GUI
+     *
+     * @param vcx
+     */
+    protected void setVertexContext(VertexContext vcx) {
+        context = vcx;
+        currentCover = new boolean[StateSpace.nodesCount()];
+        nodes = StateSpace.getNodes();
+    }
+
+    public List<NodeImpl> getNodes() {
         return nodes;
     }
 
-    public void setNodes(List<Node> nodes) {
+    public void setNodes(List<NodeImpl> nodes) {
         this.nodes = nodes;
     }
 
@@ -70,4 +84,17 @@ public abstract class AbstractEvolution implements Runnable {
     public void setCrossoverProbability(double crossoverProbability) {
         this.crossoverProbability = crossoverProbability;
     }
+
+    public void setBestIndividual(AbstractIndividual best) {
+        boolean covered;
+        for(NodeImpl node: nodes){
+            covered = best.isVertexCovered(node.getId());
+            //something is different, update map
+            if(covered != currentCover[node.getId()]){
+                context.markNode(node, covered);
+            }
+            
+        }
+    }
+    
 }

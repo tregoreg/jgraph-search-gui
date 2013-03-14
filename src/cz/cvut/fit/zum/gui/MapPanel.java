@@ -17,7 +17,7 @@ import javax.swing.JLayeredPane;
  */
 public class MapPanel extends JLayeredPane {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 7363939254912224717L;
     private MapLayer mapLayer;
     private GridLayer gridLayer;
     private SearchLayer searchLayer;
@@ -80,10 +80,10 @@ public class MapPanel extends JLayeredPane {
             searchLayer.algorithmChanged(alg);
         }
     }
-    
-    public void vertexCoverAlgorithmChanged(String algName){
+
+    public void vertexCoverAlgorithmChanged(String algName) {
         AbstractEvolution alg = EvolutionFactory.getDefault().getProvider(algName);
-        if(alg != null){
+        if (alg != null) {
             searchLayer.vertexAlgorithmChanged(alg);
         }
     }
@@ -122,8 +122,8 @@ public class MapPanel extends JLayeredPane {
     public void setDelay(long delay) {
         searchLayer.setDelay(delay);
     }
-    
-    public void startVertexCover(){
+
+    public void startVertexCover() {
         searchLayer.vertexCover();
     }
 }

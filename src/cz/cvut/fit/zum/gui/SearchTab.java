@@ -22,8 +22,9 @@ import javax.swing.event.ChangeListener;
  *
  * @author Tomas Barton
  */
-public class SearchTab extends JPanel implements AlgorithmListener{
+public class SearchTab extends JPanel implements AlgorithmListener {
 
+    private static final long serialVersionUID = 2076198240734256117L;
     private JButton stopButton;
     private JButton resetButton;
     private JComboBox algBox;
@@ -100,8 +101,8 @@ public class SearchTab extends JPanel implements AlgorithmListener{
                 mapPanel.algorithmChanged(algBox.getSelectedItem().toString());
             }
         });
-        
-          //set current algorithm
+
+        //set current algorithm
         mapPanel.algorithmChanged(algBox.getSelectedItem().toString());
 
         frmNodes = "Explored nodes: %4d";
@@ -192,10 +193,9 @@ public class SearchTab extends JPanel implements AlgorithmListener{
         c.gridx = 5;
         c.gridy = 1;
         this.add(test4, c);
-        
+
     }
-    
-    
+
     @Override
     public void statsChanged(HashMap<String, Double> stats) {
         double v = stats.get("explored");

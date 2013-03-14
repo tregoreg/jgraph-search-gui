@@ -1,6 +1,7 @@
 package cz.cvut.fit.zum.gui;
 
 import cz.cvut.fit.zum.api.ga.AbstractEvolution;
+import cz.cvut.fit.zum.data.NodeImpl;
 import java.util.List;
 import javax.swing.SwingWorker;
 
@@ -8,13 +9,13 @@ import javax.swing.SwingWorker;
  *
  * @author Tomas Barton
  */
-public class VertexContex extends SwingWorker<Void, HighlightTask> {
+public class VertexContext extends SwingWorker<Void, HighlightTask> {
 
     private AbstractEvolution evolution;
     private long startTime, endTime;
     private SearchLayer layer;
 
-    public VertexContex(SearchLayer layer, AbstractEvolution evolution) {
+    public VertexContext(SearchLayer layer, AbstractEvolution evolution) {
         this.evolution = evolution;
         this.layer = layer;
     }
@@ -50,5 +51,9 @@ public class VertexContex extends SwingWorker<Void, HighlightTask> {
             return endTime - startTime;
         }
         return System.currentTimeMillis() - startTime;
+    }
+    
+    public void markNode(NodeImpl node, boolean covered){
+        publish(new HighlightCoveredPoint(layer, node));
     }
 }

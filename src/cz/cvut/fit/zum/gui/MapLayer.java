@@ -15,31 +15,31 @@ import javax.imageio.ImageIO;
  */
 public class MapLayer extends BufferedPanel {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -5707513984688932768L;
     private BufferedImage image;
-    
+
     public MapLayer(Dimension minSize) {
         setSize(minSize);
         initComponents();
     }
-    
+
     private void initComponents() {
         loadTexture();
         setOpaque(false);
         setMinimumSize(this.getSize());
     }
-    
+
     private void loadTexture() {
         String imgFilename = "/cz/cvut/fit/resources/island_texture.png";
         try {
             image = ImageIO.read(getClass().getResourceAsStream(imgFilename));
-            
+
         } catch (IOException ex) {
             Logger.getLogger(MapLayer.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException("unable to load file " + imgFilename);
         }
     }
-    
+
     @Override
     protected void drawComponent(Graphics2D g) {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

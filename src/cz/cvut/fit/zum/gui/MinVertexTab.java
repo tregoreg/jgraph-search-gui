@@ -1,6 +1,5 @@
 package cz.cvut.fit.zum.gui;
 
-import cz.cvut.fit.zum.AlgorithmFactory;
 import cz.cvut.fit.zum.EvolutionFactory;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -18,6 +17,7 @@ import javax.swing.JPanel;
  */
 public class MinVertexTab extends JPanel {
 
+    private static final long serialVersionUID = -4912185360110694849L;
     private JButton btnStart;
     private JComboBox evolutionBox;
     private MapPanel mapPanel;

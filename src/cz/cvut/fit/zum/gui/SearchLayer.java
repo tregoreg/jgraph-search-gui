@@ -15,6 +15,7 @@ import cz.cvut.fit.zum.api.Node;
 import cz.cvut.fit.zum.data.NodeImpl;
 import cz.cvut.fit.zum.VisInfo;
 import cz.cvut.fit.zum.api.ga.AbstractEvolution;
+import cz.cvut.fit.zum.api.ga.VertexCoverTask;
 import java.util.HashMap;
 import javax.swing.event.EventListenerList;
 
@@ -42,7 +43,7 @@ public class SearchLayer extends BufferedPanel {
     protected HashMap<String, Double> stats = new HashMap<String, Double>();
     private long delay;
     private Context ctx;
-    private VertexContex vctx;
+    private VertexCoverTask vctx;
 
     public SearchLayer(Dimension dim, final VisInfo visInfo) {
         setSize(dim);
@@ -127,6 +128,10 @@ public class SearchLayer extends BufferedPanel {
 
     public void markCheckedPoint(final NodeImpl point) {
         highlightPoint(point, visited);
+    }
+    
+    public void markCoveredPoint(final NodeImpl point) {
+        highlightPoint(point, endPoint);
     }
 
     public void highlightPoint(final Node point, BufferedImage shape) {
@@ -274,7 +279,7 @@ public class SearchLayer extends BufferedPanel {
     }
 
     void vertexCover() {
-        vctx = new VertexContex(this, evolution);
-        vctx.execute();
+        vctx = new VertexCoverTask(this, evolution);
+      
     }
 }
