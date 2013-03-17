@@ -178,9 +178,12 @@ public class SearchLayer extends BufferedPanel {
      *
      * @param evolAlg
      */
-    public void vertexAlgorithmChanged(AbstractEvolution evolAlg) {
+    public void vertexAlgorithmChanged(AbstractEvolution evolAlg, boolean run) {
         this.evolution = evolAlg;
-        vertexCover();
+        vctx = new VertexCoverTask(this, evolution);
+        if(run){
+            vctx.run();
+        }
     }
 
     private void runSearch(final NodeImpl source, final NodeImpl target, final AbstractAlgorithm algorithm) {
@@ -239,10 +242,6 @@ public class SearchLayer extends BufferedPanel {
         fireStatsChanged(stats);
     }
 
-    void vertexCover() {
-        vctx = new VertexCoverTask(this, evolution);
-
-    }
     private transient EventListenerList statListeners = new EventListenerList();
 
     public void addStatsListener(AlgorithmListener listener) {
@@ -286,5 +285,9 @@ public class SearchLayer extends BufferedPanel {
                 l.statsChanged(stats);
             }
         }
+    }
+
+    public VertexCoverTask getVertexCoverTask() {
+        return vctx;
     }
 }
