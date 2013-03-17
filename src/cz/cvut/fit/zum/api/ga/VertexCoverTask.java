@@ -50,4 +50,8 @@ public class VertexCoverTask {
         this.generations = generations;
         evolution.setGenerations(generations);
     }
+    
+    public void setFinish(boolean b){
+        evolution.setFinished(b);
+    }
 }

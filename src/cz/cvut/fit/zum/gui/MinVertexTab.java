@@ -51,6 +51,7 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
     private JLabel lbGenerations;
     private String frmGenerations;
     private JPanel algPanel;
+    private boolean started = false;
 
     public MinVertexTab(MapPanel mapPanel) {
         this.mapPanel = mapPanel;
@@ -76,7 +77,16 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
         btnStart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mapPanel.vertexCoverAlgorithmChanged(evolutionBox.getSelectedItem().toString(), true);
+                if (!started) {
+                    mapPanel.vertexCoverAlgorithmChanged(evolutionBox.getSelectedItem().toString(), true);
+                    started = true;
+                    btnStart.setText("Stop");
+                } else {
+                    mapPanel.getVertexCoverTask().setFinish(true);
+                    started = false;
+                    btnStart.setText("Start");
+                }
+
             }
         });
         algPanel.add(btnStart, c);
@@ -87,9 +97,9 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
         List<String> providers = ef.getProviders();
         for (String p : providers) {
             evolutionBox.addItem(p);
-        }        
+        }
         c.gridy = 1;
-        
+
         evolutionBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
