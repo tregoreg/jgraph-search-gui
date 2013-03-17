@@ -15,7 +15,7 @@ public abstract class AbstractEvolution implements Runnable {
     /**
      * Count of generations
      */
-    protected int generationSize = 100;
+    protected int generations = 100;
     /**
      * Size of population
      */
@@ -28,6 +28,7 @@ public abstract class AbstractEvolution implements Runnable {
      * Probability of cross
      */
     protected double crossoverProbability = 0.5;
+    
     protected List<NodeImpl> nodes = null;
     private VertexContext context;
     private boolean[] currentCover;
@@ -62,12 +63,12 @@ public abstract class AbstractEvolution implements Runnable {
         this.isFinished = isFinished;
     }
 
-    public int getGenerationSize() {
-        return generationSize;
+    public int getGenerations() {
+        return generations;
     }
 
-    public void setGenerationSize(int generationSize) {
-        this.generationSize = generationSize;
+    public void setGenerations(int generations) {
+        this.generations = generations;
     }
 
     public int getPopulationSize() {

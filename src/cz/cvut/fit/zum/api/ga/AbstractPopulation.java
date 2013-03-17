@@ -50,7 +50,7 @@ public class AbstractPopulation {
     public double getAvgFitness() {
         avgFitness = 0;
         for (int i = 0; i < individuals.length; i++) {
-            individuals[i].countFitness();
+            individuals[i].getFitness();
             avgFitness += individuals[i].getFitness();
             bestFitness = Math.max(bestFitness, individuals[i].getFitness());
         }
@@ -85,7 +85,7 @@ public class AbstractPopulation {
     }
 
     
-    public int individualSize(){
+    public int individualsLength(){
         return individuals.length;
     }
     
