@@ -13,6 +13,10 @@ public abstract class AbstractIndividual implements Comparable<AbstractIndividua
     
     public abstract boolean isVertexCovered(int nodeId);
     
+    public abstract boolean getGen(int j);
+    
+    public abstract AbstractIndividual deepCopy();
+    
 
     /* ################################################################### */
     /*    BASICALLY, YOU DO NOT NEED TO TOUCH CODE BELLOW THIS LINE ;-)    */
