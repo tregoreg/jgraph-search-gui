@@ -9,6 +9,8 @@ public abstract class AbstractIndividual implements Comparable<AbstractIndividua
     
     public abstract double getFitness();
     
+    public abstract double countFitness();
+    
     public abstract boolean isVertexCovered(int nodeId);
     
 

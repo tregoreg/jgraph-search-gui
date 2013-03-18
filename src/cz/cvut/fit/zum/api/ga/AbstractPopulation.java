@@ -1,6 +1,5 @@
 package cz.cvut.fit.zum.api.ga;
 
-import cz.cvut.fit.zum.ga.Individual;
 import java.util.Arrays;
 
 /**
@@ -9,26 +8,13 @@ import java.util.Arrays;
  */
 public class AbstractPopulation {
 
-    private Individual[] individuals = null;
+    private AbstractIndividual[] individuals = null;
     protected double avgFitness = 0;
-    private double bestFitness = 0;
+    protected double bestFitness = 0;
 
     /* ################################################################### */
     /*    BASICALLY, YOU DO NOT NEED TO TOUCH THIS CODE                    */
     /* ################################################################### */
-    /**
-     * Constructor
-     *
-     * @param size is count of individuals in population
-     */
-    public AbstractPopulation(AbstractEvolution evolution, int size) {
-        individuals = new Individual[size];
-        for (int i = 0; i < individuals.length; i++) {
-            individuals[i] = new Individual(evolution);
-            individuals[i].countFitness();
-        }
-        getAvgFitness();
-    }
 
     @Override
     public String toString() {
@@ -63,8 +49,8 @@ public class AbstractPopulation {
      *
      * @return best individual
      */
-    public Individual getBestIndividual() {
-        Individual best = this.individuals[0];
+    public AbstractIndividual getBestIndividual() {
+        AbstractIndividual best = this.individuals[0];
         for (int i = 0; i < this.individuals.length; i++) {
             if (this.individuals[i].getFitness() > best.getFitness()) {
                 best = this.individuals[i];
@@ -80,7 +66,7 @@ public class AbstractPopulation {
         Arrays.sort(individuals);
     }
 
-    public Individual[] getIndividuals() {
+    public AbstractIndividual[] getIndividuals() {
         return individuals;
     }
 
@@ -89,11 +75,11 @@ public class AbstractPopulation {
         return individuals.length;
     }
     
-    public Individual getIndividual(int idx){
+    public AbstractIndividual getIndividual(int idx){
         return this.individuals[idx];
     }
     
-    public void setIndividuals(int index, Individual individual){
+    public void setIndividuals(int index, AbstractIndividual individual){
         individuals[index] = individual;
     }
 
