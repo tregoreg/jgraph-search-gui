@@ -8,7 +8,7 @@ import java.util.Arrays;
  */
 public class AbstractPopulation {
 
-    private AbstractIndividual[] individuals = null;
+    protected AbstractIndividual[] individuals = null;
     protected double avgFitness = 0;
     protected double bestFitness = 0;
 
@@ -77,6 +77,10 @@ public class AbstractPopulation {
     
     public AbstractIndividual getIndividual(int idx){
         return this.individuals[idx];
+    }
+    
+    public void addIndividual(AbstractIndividual ind){
+        this.individuals[individuals.length] = ind;
     }
     
     public void setIndividuals(int index, AbstractIndividual individual){
