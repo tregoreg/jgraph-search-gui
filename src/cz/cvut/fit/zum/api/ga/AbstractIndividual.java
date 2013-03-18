@@ -17,7 +17,11 @@ public abstract class AbstractIndividual implements Comparable<AbstractIndividua
     
     public abstract AbstractIndividual deepCopy();
     
-
+    public abstract void cross(AbstractIndividual i);
+    
+    public abstract void mutate();
+    
+   
     /* ################################################################### */
     /*    BASICALLY, YOU DO NOT NEED TO TOUCH CODE BELLOW THIS LINE ;-)    */
     /* ################################################################### */
