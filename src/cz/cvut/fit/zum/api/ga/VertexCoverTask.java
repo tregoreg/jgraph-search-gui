@@ -17,10 +17,11 @@ public class VertexCoverTask {
     private int generations;
 
     public VertexCoverTask(SearchLayer sLayer, AbstractEvolution evolution) {
+        sLayer.updateLayer();
         vctx = new VertexContext(sLayer, evolution);
         evolution.setVertexContext(vctx);
-        /*evolution.setMutationProbability(mutation);
-        evolution.setCrossoverProbability(crossover);*/
+        evolution.setMutationProbability(mutation);
+        evolution.setCrossoverProbability(crossover);
         
         this.evolution = evolution;
     }
@@ -53,5 +54,14 @@ public class VertexCoverTask {
     
     public void setFinish(boolean b){
         evolution.setFinished(b);
+        vctx.cancel(true);
     }
+    
+    public boolean isFinished(){
+        if(vctx == null){
+            return true;
+        }
+        return vctx.isDone();
+    }
+            
 }

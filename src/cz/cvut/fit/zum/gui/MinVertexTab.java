@@ -17,6 +17,7 @@ import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -83,6 +84,8 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
                     btnStart.setText("Stop");
                 } else {
                     mapPanel.getVertexCoverTask().setFinish(true);
+                    btnStart.setEnabled(false);
+                    
                     started = false;
                     btnStart.setText("Start");
                 }

@@ -110,4 +110,16 @@ public abstract class AbstractEvolution implements Runnable {
             }
         }
     }
+    
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getName()).append("[");
+        sb.append("generations = ").append(getGenerations()).append("\n");
+        sb.append("population = ").append(getPopulationSize()).append("\n");
+        sb.append("mutation = ").append(getMutationProbability()).append("\n");
+        sb.append("crossover = ").append(getCrossoverProbability()).append("\n");
+        sb.append("]");
+        return sb.toString();
+    }
 }
