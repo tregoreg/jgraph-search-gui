@@ -10,7 +10,7 @@ public class AbstractPopulation {
 
     protected AbstractIndividual[] individuals = null;
     protected double avgFitness = 0;
-    protected double bestFitness = 0;
+    private double bestFitness = 0;
 
     /* ################################################################### */
     /*    BASICALLY, YOU DO NOT NEED TO TOUCH THIS CODE                    */
@@ -49,8 +49,8 @@ public class AbstractPopulation {
      *
      * @return best individual
      */
-    public AbstractIndividual getBestIndividual() {
-        AbstractIndividual best = this.individuals[0];
+    public Individual getBestIndividual() {
+        Individual best = this.individuals[0];
         for (int i = 0; i < this.individuals.length; i++) {
             if (this.individuals[i].getFitness() > best.getFitness()) {
                 best = this.individuals[i];
@@ -66,7 +66,7 @@ public class AbstractPopulation {
         Arrays.sort(individuals);
     }
 
-    public AbstractIndividual[] getIndividuals() {
+    public Individual[] getIndividuals() {
         return individuals;
     }
 
@@ -75,15 +75,11 @@ public class AbstractPopulation {
         return individuals.length;
     }
     
-    public AbstractIndividual getIndividual(int idx){
+    public Individual getIndividual(int idx){
         return this.individuals[idx];
     }
     
-    public void addIndividual(AbstractIndividual ind){
-        this.individuals[individuals.length] = ind;
-    }
-    
-    public void setIndividuals(int index, AbstractIndividual individual){
+    public void setIndividuals(int index, Individual individual){
         individuals[index] = individual;
     }
 
