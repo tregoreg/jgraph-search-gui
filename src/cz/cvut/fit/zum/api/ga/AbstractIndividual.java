@@ -1,5 +1,7 @@
 package cz.cvut.fit.zum.api.ga;
 
+import java.util.List;
+
 /**
  *
  * @author Tomas Barton
@@ -17,7 +19,7 @@ public abstract class AbstractIndividual implements Comparable<AbstractIndividua
     
     public abstract AbstractIndividual deepCopy();
     
-    public abstract void cross(AbstractIndividual i);
+    public abstract List<AbstractIndividual> cross(AbstractIndividual i);
     
     public abstract void mutate();
     
