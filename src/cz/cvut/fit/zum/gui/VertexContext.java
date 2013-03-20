@@ -133,20 +133,21 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
                     publish(new HighlightEdge(layer, current, to, Color.GREEN));
                 } else {
                     publish(new HighlightEdge(layer, current, to, Color.RED));
-                }
-                //check all neighours which has been possibly covered by this node
-                boolean isCovered = false;
-                for (Node nNeighbour : to.expand()) {
-                    if (cover.contains(nNeighbour)) {
-                        isCovered = true;
-                        //publish(new HighlightEdge(layer, nNeighbour, to, Color.GREEN));
-                    }                            
-                }
 
-                if (!isCovered) {
-                    reachable.remove(to);
-                    unreachable.add(to);
-                    publish(new HighlightPoint(layer, to, notCovered));
+                    //check all neighours which has been possibly covered by this node
+                    boolean isCovered = false;
+                    for (Node nNeighbour : to.expand()) {
+                        if (cover.contains(nNeighbour)) {
+                            isCovered = true;
+                            //publish(new HighlightEdge(layer, nNeighbour, to, Color.GREEN));
+                        }
+                    }
+
+                    if (!isCovered) {
+                        reachable.remove(to);
+                        unreachable.add(to);
+                        publish(new HighlightPoint(layer, to, notCovered));
+                    }
                 }
             }
 
