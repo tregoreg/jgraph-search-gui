@@ -1,6 +1,6 @@
 package cz.cvut.fit.zum.gui;
 
-import cz.cvut.fit.zum.data.NodeImpl;
+import cz.cvut.fit.zum.api.Node;
 import java.awt.Color;
 
 /**
@@ -9,12 +9,12 @@ import java.awt.Color;
  */
 public class HighlightEdge extends HighlightTask {
 
-    protected NodeImpl start;
-    protected NodeImpl end;
+    protected Node start;
+    protected Node end;
     private SearchLayer layer;
     private Color color;
 
-    public HighlightEdge(SearchLayer layer, NodeImpl start, NodeImpl end, Color c) {
+    public HighlightEdge(SearchLayer layer, Node start, Node end, Color c) {
         this.layer = layer;
         this.start = start;
         this.end = end;

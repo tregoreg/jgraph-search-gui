@@ -4,10 +4,17 @@ package cz.cvut.fit.zum.api;
  *
  * @author Tomas Barton
  */
+import cz.cvut.fit.zum.data.Edge;
 import java.awt.geom.Point2D;
 import java.util.List;
 
 public abstract interface Node {
+
+    /**
+     *
+     * @return unique ID of Node
+     */
+    public int getId();
 
     /**
      * X coordinate on a map in range <0;1>
@@ -45,14 +52,19 @@ public abstract interface Node {
      */
     @Override
     public abstract boolean equals(Object other);
-    
-    
+
     @Override
     public int hashCode();
-    
+
     /**
-     * 
+     *
      * @return coordinate of a point
      */
     public abstract Point2D getPoint();
+    
+    /**
+     * 
+     * @return List of Node's edges
+     */
+    public List<Edge> getEdges();
 }

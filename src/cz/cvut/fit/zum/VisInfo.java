@@ -1,5 +1,6 @@
 package cz.cvut.fit.zum;
 
+import cz.cvut.fit.zum.api.Node;
 import cz.cvut.fit.zum.data.StateSpace;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -56,13 +57,13 @@ public class VisInfo {
         return circ;
     }
 
-    public NodeImpl findNode(int x, int y, Dimension mapSize) {
+    public Node findNode(int x, int y, Dimension mapSize) {
         mx = ((double) x / mapSize.width);
         my = ((double) y / mapSize.height);
 
         nodeId = -1;
         minDistance = MIN_DIST;
-        for (NodeImpl node : getNodes()) {
+        for (Node node : getNodes()) {
             dx = node.getX() - mx;
             dy = node.getY() - my;
 
@@ -83,10 +84,10 @@ public class VisInfo {
 
     public void computePositions(Dimension size) {
         double x, y;
-        for (NodeImpl node : getNodes()) {
+        for (Node node : getNodes()) {
             x = node.getX() * size.width;
             y = node.getY() * size.height;
-            node.setPoint(new Point2D.Double(x, y));
+            ((NodeImpl) node).setPoint(new Point2D.Double(x, y));
         }
     }
 
@@ -122,11 +123,11 @@ public class VisInfo {
         this.nodeColor = nodeColor;
     }
 
-    public List<NodeImpl> getNodes() {
+    public List<Node> getNodes() {
         return StateSpace.getNodes();
     }
 
-    public NodeImpl getNode(int id) {
+    public Node getNode(int id) {
         return StateSpace.getNode(id);
     }
 

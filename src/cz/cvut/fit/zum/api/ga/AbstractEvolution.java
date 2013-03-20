@@ -1,8 +1,8 @@
 package cz.cvut.fit.zum.api.ga;
 
-import cz.cvut.fit.zum.data.NodeImpl;
+import cz.cvut.fit.zum.api.Node;
 import cz.cvut.fit.zum.data.StateSpace;
-import cz.cvut.fit.zum.data.VertexContext;
+import cz.cvut.fit.zum.gui.VertexContext;
 import java.util.List;
 
 /**
@@ -29,7 +29,7 @@ public abstract class AbstractEvolution implements Runnable {
      */
     protected double crossoverProbability = 0.5;
     
-    protected List<NodeImpl> nodes = null;
+    protected List<Node> nodes = null;
     private VertexContext context;
     private boolean[] currentCover;
     protected boolean isFinished = false;
@@ -45,11 +45,11 @@ public abstract class AbstractEvolution implements Runnable {
         nodes = StateSpace.getNodes();
     }
 
-    public List<NodeImpl> getNodes() {
+    public List<Node> getNodes() {
         return nodes;
     }
 
-    public void setNodes(List<NodeImpl> nodes) {
+    public void setNodes(List<Node> nodes) {
         this.nodes = nodes;
     }
 
@@ -100,7 +100,7 @@ public abstract class AbstractEvolution implements Runnable {
         int id;
 
         context.setBestFitness(best.getFitness());
-        for (NodeImpl node : nodes) {
+        for (Node node : nodes) {
             covered = best.getGen(node.getId());
             id = node.getId();
             //something is different, update map

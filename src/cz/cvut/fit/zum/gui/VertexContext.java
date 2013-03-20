@@ -1,13 +1,13 @@
-package cz.cvut.fit.zum.data;
+package cz.cvut.fit.zum.gui;
 
 import cz.cvut.fit.zum.VisInfo;
+import cz.cvut.fit.zum.api.Node;
 import cz.cvut.fit.zum.api.ga.AbstractEvolution;
-import cz.cvut.fit.zum.gui.HighlightEdge;
-import cz.cvut.fit.zum.gui.HighlightPoint;
-import cz.cvut.fit.zum.gui.HighlightTask;
-import cz.cvut.fit.zum.gui.SearchLayer;
+import cz.cvut.fit.zum.data.Edge;
+import cz.cvut.fit.zum.data.StateSpace;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,7 +17,7 @@ import javax.swing.SwingWorker;
  *
  * @author Tomas Barton
  */
-public class VertexContext extends SwingWorker<Void, HighlightTask> {
+public class VertexContext extends SwingWorker<Void, HighlightTask> implements TaskContext {
 
     private AbstractEvolution evolution;
     private long startTime, endTime;
@@ -27,18 +27,18 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
     private BufferedImage reachablePoint;
     private Color edge = Color.BLUE;
     private Color nodeColor = new Color(0.0f, 0.0f, 0.0f);  // semi-transparent
-    private HashSet<NodeImpl> cover;
-    private HashSet<NodeImpl> reachable;
-    private HashSet<NodeImpl> unreachable;
+    private HashSet<Node> cover;
+    private HashSet<Node> reachable;
+    private HashSet<Node> unreachable;
     private double bestFitness;
     protected HashMap<String, Double> stats = new HashMap<String, Double>();
 
     public VertexContext(SearchLayer layer, AbstractEvolution evolution) {
         this.evolution = evolution;
         this.layer = layer;
-        cover = new HashSet<NodeImpl>(StateSpace.nodesCount());
-        reachable = new HashSet<NodeImpl>(StateSpace.nodesCount() / 2);
-        unreachable = new HashSet<NodeImpl>(StateSpace.nodesCount());
+        cover = new HashSet<Node>(StateSpace.nodesCount());
+        reachable = new HashSet<Node>(StateSpace.nodesCount() / 2);
+        unreachable = new HashSet<Node>(StateSpace.nodesCount());
         unreachable.addAll(StateSpace.getNodes());
         VisInfo visInfo = VisInfo.getInstance();
         notCovered = visInfo.createCircle(nodeColor);
@@ -71,7 +71,7 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
         long time = endTime - startTime;
         System.out.println("Evolution time = " + time + " ms");
         updateStats();
-        layer.enableSearchButton();        
+        layer.enableSearchButton();
     }
 
     public long getTime() {
@@ -81,14 +81,27 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
         return System.currentTimeMillis() - startTime;
     }
 
-    public void markNode(NodeImpl current, boolean covered) {
+    @Override
+    public List<Node> expand(Node node) {
+        List<Edge> edges = node.getEdges();
+        ArrayList<Node> result = new ArrayList<Node>();
+        Node node2;
+        for (Edge e : edges) {
+            int toId = e.getToId();
+            node2 = StateSpace.getNode(toId);
+            result.add(node2);
+        }
+        return result;
+    }
+
+    public void markNode(Node current, boolean covered) {
         if (covered) {
             publish(new HighlightPoint(layer, current, coveredPoint));
             cover.add(current);
             reachable.remove(current); //remove if present
             unreachable.remove(current);
-            List<NodeImpl> nn = current.fastExpand(StateSpace.getNodes());
-            for (NodeImpl to : nn) {
+            List<Node> nn = current.expand();
+            for (Node to : nn) {
                 //highlight edge
 
                 //both edge's nodes are covered
@@ -106,9 +119,9 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
         } else {
             cover.remove(current);
 
-            List<NodeImpl> nn = current.fastExpand(StateSpace.getNodes());
+            List<Node> nn = current.expand();
             boolean neigourCovered = false;
-            for (NodeImpl to : nn) {
+            for (Node to : nn) {
                 //from is not in cover
                 if (cover.contains(to)) {
                     neigourCovered = true;
@@ -146,8 +159,18 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
     public void setBestFitness(double bestFitness) {
         this.bestFitness = bestFitness;
     }
-    
-    public AbstractEvolution getEvolution(){
+
+    public AbstractEvolution getEvolution() {
         return evolution;
+    }
+
+    @Override
+    public boolean isTarget(Node node) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setFinish(boolean interrupt) {
+        cancel(interrupt);
     }
 }

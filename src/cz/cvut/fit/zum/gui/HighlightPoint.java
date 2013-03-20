@@ -1,6 +1,6 @@
 package cz.cvut.fit.zum.gui;
 
-import cz.cvut.fit.zum.data.NodeImpl;
+import cz.cvut.fit.zum.api.Node;
 import java.awt.image.BufferedImage;
 
 /**
@@ -10,10 +10,10 @@ import java.awt.image.BufferedImage;
 public class HighlightPoint extends HighlightTask {
 
     private SearchLayer layer;
-    private NodeImpl node;
+    private Node node;
     private BufferedImage shape;
 
-    public HighlightPoint(SearchLayer layer, NodeImpl node, BufferedImage shape) {
+    public HighlightPoint(SearchLayer layer, Node node, BufferedImage shape) {
         this.layer = layer;
         this.node = node;
         this.shape = shape;

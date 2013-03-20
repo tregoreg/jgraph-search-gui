@@ -1,7 +1,8 @@
 package cz.cvut.fit.zum.api.ga;
 
+import cz.cvut.fit.zum.data.NodeImpl;
 import cz.cvut.fit.zum.gui.SearchLayer;
-import cz.cvut.fit.zum.data.VertexContext;
+import cz.cvut.fit.zum.gui.VertexContext;
 
 /**
  * Keeps context (actual settings from GUI)
@@ -32,6 +33,7 @@ public class VertexCoverTask {
         sLayer.updateLayer();
         //creates a new thread
         vctx = new VertexContext(sLayer, evolution);
+        NodeImpl.setContext(vctx);
         evolution.setVertexContext(vctx);
         vctx.execute();
     }

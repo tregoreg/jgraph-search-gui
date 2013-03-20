@@ -1,5 +1,6 @@
 package cz.cvut.fit.zum.data;
 
+import cz.cvut.fit.zum.gui.TaskContext;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import cz.cvut.fit.zum.api.Node;
-import cz.cvut.fit.zum.gui.Context;
 
 /**
  * Represents inner information about nodes
@@ -41,15 +41,17 @@ public final class NodeImpl implements Node {
     @XmlTransient
     private Point2D point;
     @XmlTransient
-    private static Context context;
+    private static TaskContext context;
 
-    public List<Edge> getEdge() {
+    @Override
+    public List<Edge> getEdges() {
         if (this.edge == null) {
             this.edge = new ArrayList<Edge>();
         }
         return this.edge;
     }
 
+    @Override
     public int getId() {
         return this.id;
     }
@@ -101,66 +103,22 @@ public final class NodeImpl implements Node {
         this.point = point;
     }
 
-    public static void setContext(Context ctx) {
+    public static void setContext(TaskContext ctx) {
         context = ctx;
     }
 
-    public static Context getContext() {
+    public static TaskContext getContext() {
         return context;
     }
 
+    /**
+     * For each task might behave differently
+     *
+     * @return List of neighbor nodes
+     */
     @Override
     public List<Node> expand() {
-        context.expandCalled();
-        List<Edge> edges = getEdge();
-        ArrayList<Node> result = new ArrayList<Node>();
-        NodeImpl node2;
-        for (Edge e : edges) {
-            int toId = e.getToId();
-            node2 = context.getNode(toId);
-            if (node2 == null) {
-                System.err.println("Node with id " + toId + " is not in node list!");
-            } else {
-                context.highlightEdge(this, node2);
-                result.add(node2);
-            }
-        }
-        //if we have to stop
-        if (context.isStop()) {
-            throw new RuntimeException("Algorithm stopped by the user");
-        }
-        context.incExplored(result.size());
-        long delay = context.getDelay();
-        try {
-            Thread.sleep(delay);
-        } catch (InterruptedException e) {
-            System.out.println("Search interrupted.");
-            //Exceptions.printStackTrace(e);
-        }
-
-        return result;
-    }
-
-    /**
-     * Internal method, expanding nodes without counting expand calls
-     *
-     * @param nodes
-     * @return
-     */
-    protected List<NodeImpl> fastExpand(List<NodeImpl> nodes) {
-        List<Edge> edges = getEdge();
-        ArrayList<NodeImpl> result = new ArrayList<NodeImpl>();
-        NodeImpl node2;
-        for (Edge e : edges) {
-            int toId = e.getToId();
-            node2 = nodes.get(toId);
-            if (node2 == null) {
-                System.err.println("Node with id " + toId + " is not in node list!");
-            } else {
-                result.add(node2);
-            }
-        }
-        return result;
+        return context.expand(this);
     }
 
     @Override
@@ -182,7 +140,6 @@ public final class NodeImpl implements Node {
 
     @Override
     public boolean isTarget() {
-        context.targetCheck(this);
-        return context.isFinal(this.getId());
+        return context.isTarget(this);        
     }
 }

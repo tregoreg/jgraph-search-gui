@@ -1,6 +1,7 @@
 package cz.cvut.fit.zum.gui;
 
 import cz.cvut.fit.zum.VisInfo;
+import cz.cvut.fit.zum.api.Node;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -47,7 +48,7 @@ public class GridLayer extends BufferedPanel {
             AffineTransform at = visInfo.getTranformation();
             Point2D from;
             Shape line;
-            for (NodeImpl node : visInfo.getNodes()) {
+            for (Node node : visInfo.getNodes()) {
                 from = node.getPoint();
 
                 //filling shapes seems to be very expensive operation
@@ -57,7 +58,7 @@ public class GridLayer extends BufferedPanel {
                 g.drawImage(buffCircle, at, null);
 
                 //System.out.println("point [" + x + ", " + y + "]");
-                for (Edge edge : node.getEdge()) {
+                for (Edge edge : node.getEdges()) {
                     if (edge.getFromId() < edge.getToId()) {
                         NodeImpl nodeTo = (NodeImpl) visInfo.getNode(edge.getToId());
                         line = new Line2D.Double(from, nodeTo.getPoint());

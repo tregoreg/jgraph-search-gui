@@ -7,22 +7,23 @@ import cz.cvut.fit.zum.api.InformedSearch;
 import java.util.List;
 import cz.cvut.fit.zum.api.Node;
 import cz.cvut.fit.zum.api.UninformedSearch;
-import cz.cvut.fit.zum.data.NodeImpl;
+import cz.cvut.fit.zum.data.Edge;
 import cz.cvut.fit.zum.data.StateSpace;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import javax.swing.SwingWorker;
 
 /**
  *
  * @author Tomas Barton
  */
-public class Context extends SwingWorker<Void, HighlightTask> {
+public class Context extends SwingWorker<Void, HighlightTask> implements TaskContext {
 
     private Algorithm algorithm;
-    private final List<NodeImpl> nodes;
-    private final NodeImpl startNode;
-    private final NodeImpl endNode;
+    private final List<Node> nodes;
+    private final Node startNode;
+    private final Node endNode;
     private SearchLayer layer;
     private int expandCalls;
     private int exploredNodes;
@@ -36,7 +37,7 @@ public class Context extends SwingWorker<Void, HighlightTask> {
     private BufferedImage visited;
     private Color edgeColor = new Color(255, 0, 255);
 
-    public Context(AbstractAlgorithm algorithm, NodeImpl startNode, NodeImpl endNode, SearchLayer layer, long delay) {
+    public Context(AbstractAlgorithm algorithm, Node startNode, Node endNode, SearchLayer layer, long delay) {
         this.algorithm = algorithm;
         VisInfo visInfo = VisInfo.getInstance();
         this.nodes = visInfo.getNodes();
@@ -61,11 +62,11 @@ public class Context extends SwingWorker<Void, HighlightTask> {
         return this.endNode;
     }
 
-    public List<NodeImpl> getNodes() {
+    public List<Node> getNodes() {
         return nodes;
     }
 
-    public final NodeImpl getNode(int id) {
+    public final Node getNode(int id) {
         return nodes.get(id);
     }
 
@@ -79,7 +80,7 @@ public class Context extends SwingWorker<Void, HighlightTask> {
      * @param start
      * @param end
      */
-    public void highlightEdge(NodeImpl start, NodeImpl end) {
+    public void highlightEdge(Node start, Node end) {
         publish(new HighlightEdge(layer, start, end, edgeColor));
     }
 
@@ -100,7 +101,7 @@ public class Context extends SwingWorker<Void, HighlightTask> {
 
     }
 
-    public void targetCheck(NodeImpl node) {
+    public void targetCheck(Node node) {
         targetCheck++;
         if (node.getId() != startNode.getId()) {
             publish(new HighlightPoint(layer, node, visited));
@@ -119,7 +120,8 @@ public class Context extends SwingWorker<Void, HighlightTask> {
         return stop;
     }
 
-    public void setStop(boolean stop) {
+    @Override
+    public void setFinish(boolean stop) {
         this.stop = stop;
         if (stop) {
             cancel(true);
@@ -181,5 +183,38 @@ public class Context extends SwingWorker<Void, HighlightTask> {
             return endTime - startTime;
         }
         return System.currentTimeMillis() - startTime;
+    }
+
+    @Override
+    public List<Node> expand(Node from) {
+        expandCalled();
+        List<Edge> edges = from.getEdges();
+        ArrayList<Node> result = new ArrayList<Node>();
+        Node to;
+        for (Edge e : edges) {
+            int toId = e.getToId();
+            to = nodes.get(toId);
+            highlightEdge(from, to);
+            result.add(to);
+        }
+        //if we have to stop
+        if (isStop()) {
+            throw new RuntimeException("Algorithm stopped by the user");
+        }
+        incExplored(result.size());
+        long d = getDelay();
+        try {
+            Thread.sleep(d);
+        } catch (InterruptedException e) {
+            System.out.println("Search interrupted.");
+            //Exceptions.printStackTrace(e);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean isTarget(Node node) {
+        targetCheck(node);
+        return isFinal(node.getId());
     }
 }

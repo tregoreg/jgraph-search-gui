@@ -1,5 +1,7 @@
 package cz.cvut.fit.zum.data;
 
+import cz.cvut.fit.zum.api.Node;
+import cz.cvut.fit.zum.gui.LoaderContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,23 +11,29 @@ import java.util.List;
  */
 public class StateSpace {
 
-    private static List<NodeImpl> nodes;
+    private static List<Node> nodes;
     private static List<Edge> edges = new ArrayList<Edge>();
 
     public static void setNodes(List<NodeImpl> n) {
-        nodes = n;
+
+        NodeImpl.setContext(new LoaderContext());
+        
+        CollectionTransformer transformer = new CollectionTransformer<NodeImpl, Node>() {
+            @Override
+            Node transform(NodeImpl e) {
+                return e;
+            }
+        };
+
+        nodes = transformer.transform(n);
         updateEdges();
     }
 
     private static void updateEdges() {
         for (int n = 0; n < nodes.size(); n++) {
-            NodeImpl node = (NodeImpl) nodes.get(n);
-            List<NodeImpl> neighbours = node.fastExpand(nodes);
+            Node node = nodes.get(n);
+            List<Node> neighbours = node.expand();
             for (int s = 0; s < neighbours.size(); s++) {
-                /* Edge tmp = new Edge();
-                 tmp.setFromId(node.getId());
-                 tmp.setToId(((NodeImpl) neighbours.get(s)).getId());
-                 EdgeWrapper ew = new EdgeWrapper(e, tmp);*/
                 Edge edge = new Edge();
                 edge.setFromId(node.getId());
                 edge.setToId(neighbours.get(s).getId());
@@ -34,7 +42,7 @@ public class StateSpace {
                 }
             }
         }
-        System.out.println("edges size: "+edges.size());
+        System.out.println("edges size: " + edges.size());
     }
 
     public static int nodesCount() {
@@ -48,11 +56,15 @@ public class StateSpace {
         return edges.size();
     }
 
-    public static List<NodeImpl> getNodes() {
+    public static List<Node> getNodes() {
         return nodes;
     }
 
-    public static NodeImpl getNode(int id) {
+    public static List<Edge> getEdges() {
+        return edges;
+    }
+
+    public static Node getNode(int id) {
         return nodes.get(id);
     }
 

@@ -18,7 +18,6 @@ import cz.cvut.fit.zum.api.ga.AbstractEvolution;
 import cz.cvut.fit.zum.api.ga.VertexCoverTask;
 import cz.cvut.fit.zum.data.StateSpace;
 import java.util.HashMap;
-import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 
 /**
@@ -28,13 +27,13 @@ import javax.swing.event.EventListenerList;
 public class SearchLayer extends BufferedPanel {
 
     private static final long serialVersionUID = 7263174864182674953L;
-    private NodeImpl from, to;
+    private Node from, to;
     protected BufferedImage startPoint;
     protected BufferedImage endPoint;
     protected BufferedImage visited;
     protected VisInfo visInfo;
     private AffineTransform at;
-    private NodeImpl node;
+    private Node node;
     private Shape line;
     private Color pathColor;
     protected boolean searchFinished = false;
@@ -61,7 +60,7 @@ public class SearchLayer extends BufferedPanel {
                     } else {
                         stopSearch();
                     }
-                    final NodeImpl n = node;
+                    final Node n = node;
                     highlightPoint(n, startPoint);
                     repaint();
                 } else {
@@ -116,10 +115,10 @@ public class SearchLayer extends BufferedPanel {
     }
 
     void stopSearch() {
-        Context context = NodeImpl.getContext();
+        TaskContext context = NodeImpl.getContext();
         if (context != null) {
             System.out.println("Stopping search");
-            context.setStop(true);
+            context.setFinish(true);
         }
         updateLayer();
         repaint();
@@ -185,7 +184,7 @@ public class SearchLayer extends BufferedPanel {
         }
     }
 
-    private void runSearch(final NodeImpl source, final NodeImpl target, final AbstractAlgorithm algorithm) {
+    private void runSearch(final Node source, final Node target, final AbstractAlgorithm algorithm) {
         highlightPoint(source, startPoint);
         highlightPoint(target, endPoint);
         repaint();
@@ -216,7 +215,7 @@ public class SearchLayer extends BufferedPanel {
         highlightPoint(to, endPoint);
     }
 
-    public void search(NodeImpl a, NodeImpl b) {
+    public void search(Node a, Node b) {
         from = a;
         to = b;
         updateLayer();
