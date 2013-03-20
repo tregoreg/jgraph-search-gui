@@ -144,4 +144,8 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
     public void setBestFitness(double bestFitness) {
         this.bestFitness = bestFitness;
     }
+    
+    public AbstractEvolution getEvolution(){
+        return evolution;
+    }
 }

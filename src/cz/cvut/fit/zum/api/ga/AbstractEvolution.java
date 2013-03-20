@@ -83,16 +83,16 @@ public abstract class AbstractEvolution implements Runnable {
         return mutationProbability;
     }
 
-    public void setMutationProbability(double mutationProbability) {
-        this.mutationProbability = mutationProbability;
+    public void setMutationProbability(double prob) {
+        this.mutationProbability = prob;
     }
 
     public double getCrossoverProbability() {
         return crossoverProbability;
     }
 
-    public void setCrossoverProbability(double crossoverProbability) {
-        this.crossoverProbability = crossoverProbability;
+    public void setCrossoverProbability(double prob) {
+        this.crossoverProbability = prob;
     }
 
     public void updateMap(AbstractIndividual best) {

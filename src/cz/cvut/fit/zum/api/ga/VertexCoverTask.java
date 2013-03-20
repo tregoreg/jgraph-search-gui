@@ -4,64 +4,62 @@ import cz.cvut.fit.zum.gui.SearchLayer;
 import cz.cvut.fit.zum.data.VertexContext;
 
 /**
+ * Keeps context (actual settings from GUI)
  *
  * @author Tomas Barton
  */
 public class VertexCoverTask {
 
     private VertexContext vctx;
-    private AbstractEvolution evolution;
-    private double mutation = 0.3;
-    private double crossover = 0.4;
+    private double mutation;
+    private double crossover;
     private int population;
     private int generations;
+    private SearchLayer sLayer;
 
-    public VertexCoverTask(SearchLayer sLayer, AbstractEvolution evolution) {
+    public VertexCoverTask(SearchLayer sLayer) {
         sLayer.updateLayer();
-        vctx = new VertexContext(sLayer, evolution);
-        evolution.setVertexContext(vctx);
-        evolution.setMutationProbability(mutation);
-        evolution.setCrossoverProbability(crossover);
-        
-        this.evolution = evolution;
+        this.sLayer = sLayer;
+
     }
 
-    public void run() {
-        if (vctx != null) {
-            vctx.execute();
-        }
+    public void run(AbstractEvolution evolution) {
+        evolution.setMutationProbability(mutation);
+        evolution.setCrossoverProbability(crossover);
+        evolution.setPopulationSize(population);
+        evolution.setGenerations(generations);
+        sLayer.updateLayer();
+        //creates a new thread
+        vctx = new VertexContext(sLayer, evolution);
+        evolution.setVertexContext(vctx);
+        vctx.execute();
     }
 
     public void setMutationProbability(int value) {
         mutation = ((double) value) / 100.0;
-        this.evolution.setMutationProbability(mutation);
     }
 
     public void setCrossoverProbability(int value) {
         crossover = ((double) value) / 100.0;
-        this.evolution.setCrossoverProbability(crossover);
     }
-    
-    public void setPopulationSize(int size){
+
+    public void setPopulationSize(int size) {
         population = size;
-        evolution.setPopulationSize(size);
     }
-    
-    public void setGenerations(int generations){
+
+    public void setGenerations(int generations) {
         this.generations = generations;
-        evolution.setGenerations(generations);
     }
-    
-    public void setFinish(boolean b){
-        evolution.setFinished(b);
+
+    public void setFinish(boolean b) {
+        vctx.getEvolution().setFinished(b);
         vctx.cancel(true);
     }
-    
-    public boolean isFinished(){
-        if(vctx == null){
+
+    public boolean isFinished() {
+        if (vctx == null) {
             return true;
         }
         return vctx.isDone();
     }
-            
 }

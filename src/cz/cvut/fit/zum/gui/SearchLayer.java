@@ -38,7 +38,6 @@ public class SearchLayer extends BufferedPanel {
     private Color pathColor;
     protected boolean searchFinished = false;
     private AbstractAlgorithm alg;
-    private AbstractEvolution evolution;
     protected HashMap<String, Double> stats = new HashMap<String, Double>();
     private long delay;
     private Context ctx;
@@ -89,6 +88,7 @@ public class SearchLayer extends BufferedPanel {
         endPoint = visInfo.createCircle(Color.GREEN);
         visited = visInfo.createCircle(new Color(215, 153, 3));
         pathColor = Color.white;
+        vctx = new VertexCoverTask(this);
         clearStats();
     }
 
@@ -179,10 +179,8 @@ public class SearchLayer extends BufferedPanel {
      * @param evolAlg
      */
     public void vertexAlgorithmChanged(AbstractEvolution evolAlg, boolean run) {
-        this.evolution = evolAlg;
-        vctx = new VertexCoverTask(this, evolution);
-        if(run){
-            vctx.run();
+        if (run) {
+            vctx.run(evolAlg);
         }
     }
 
@@ -241,7 +239,6 @@ public class SearchLayer extends BufferedPanel {
         stats.put("time", (double) ctx.getTime());
         fireStatsChanged(stats);
     }
-
     private transient EventListenerList statListeners = new EventListenerList();
 
     public void addStatsListener(AlgorithmListener listener) {
