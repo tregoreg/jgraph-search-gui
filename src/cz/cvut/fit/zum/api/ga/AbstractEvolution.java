@@ -101,7 +101,7 @@ public abstract class AbstractEvolution implements Runnable {
 
         context.setBestFitness(best.getFitness());
         for (NodeImpl node : nodes) {
-            covered = best.isVertexCovered(node.getId());
+            covered = best.getGen(node.getId());
             id = node.getId();
             //something is different, update map
             if (covered != currentCover[id]) {
