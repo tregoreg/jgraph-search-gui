@@ -53,7 +53,6 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
     protected Void doInBackground() throws Exception {
         panelResize();
         startTime = System.currentTimeMillis();
-        endTime = startTime;
         evolution.run();
 
         endTime = System.currentTimeMillis();
@@ -174,7 +173,8 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
         stats.put("coverage", cov);
         stats.put("reached", (double) reachable.size());
         stats.put("unreachable", (double) unreachable.size());
-        stats.put("time", (double) getTime());
+        double sec = getTime() / 1000.0;
+        stats.put("time", sec);
         stats.put("generation", (double) generation);
 
         layer.fireEvolutionChanged(stats);
@@ -195,6 +195,8 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
 
     @Override
     public void setFinish(boolean interrupt) {
+        endTime = System.currentTimeMillis();
+        updateStats();
         cancel(interrupt);
     }
 

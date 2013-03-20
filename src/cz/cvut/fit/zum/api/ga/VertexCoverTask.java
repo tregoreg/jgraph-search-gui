@@ -55,7 +55,7 @@ public class VertexCoverTask {
     }
 
     public void setFinish(boolean b) {
-        vctx.cancel(true);
+        vctx.setFinish(b);
         vctx.getEvolution().setFinished(b);
     }
 

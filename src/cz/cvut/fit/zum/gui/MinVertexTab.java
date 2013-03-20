@@ -133,7 +133,7 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
         lbGeneration = new JLabel(String.format(frmGeneration, 0, 0.0));
         frmFit = "Fitness: %10.2f";
         lbFit = new JLabel(String.format(frmFit, 0.0));
-        frmTime = "Time: %10.0f ms";
+        frmTime = "Time: %10.0f s";
         lbTime = new JLabel(String.format(frmTime, 0.0));
         statsPanel = new JPanel();
         statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.Y_AXIS));
