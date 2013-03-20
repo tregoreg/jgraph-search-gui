@@ -41,6 +41,8 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
         unreachable = new HashSet<Node>(StateSpace.nodesCount());
         unreachable.addAll(StateSpace.getNodes());
         VisInfo visInfo = VisInfo.getInstance();
+        //uncovered nodes
+        //visInfo.setNodeColor(nodeColor);        
         notCovered = visInfo.createCircle(nodeColor);
         coveredPoint = visInfo.createCircle(Color.GREEN);
         reachablePoint = visInfo.createCircle(Color.BLUE);
@@ -94,14 +96,18 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
         return result;
     }
 
+    /**
+     *
+     * @param current
+     * @param covered is included in cover
+     */
     public void markNode(Node current, boolean covered) {
         if (covered) {
             publish(new HighlightPoint(layer, current, coveredPoint));
             cover.add(current);
             reachable.remove(current); //remove if present
             unreachable.remove(current);
-            List<Node> nn = current.expand();
-            for (Node to : nn) {
+            for (Node to : current.expand()) {
                 //highlight edge
 
                 //both edge's nodes are covered
@@ -115,25 +121,39 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
                     unreachable.remove(to);
                 }
             }
-
         } else {
             cover.remove(current);
 
             List<Node> nn = current.expand();
-            boolean neigourCovered = false;
+            boolean coveredByNeighbour = false;
             for (Node to : nn) {
                 //from is not in cover
                 if (cover.contains(to)) {
-                    neigourCovered = true;
+                    coveredByNeighbour = true;
                     publish(new HighlightEdge(layer, current, to, Color.GREEN));
                 } else {
                     publish(new HighlightEdge(layer, current, to, Color.RED));
                 }
+                //check all neighours which has been possibly covered by this node
+                boolean isCovered = false;
+                for (Node nNeighbour : to.expand()) {
+                    if (cover.contains(nNeighbour)) {
+                        isCovered = true;
+                        //publish(new HighlightEdge(layer, nNeighbour, to, Color.GREEN));
+                    }                            
+                }
+
+                if (!isCovered) {
+                    reachable.remove(to);
+                    unreachable.add(to);
+                    publish(new HighlightPoint(layer, to, notCovered));
+                }
             }
 
-            if (neigourCovered) {
+            if (coveredByNeighbour) {
                 publish(new HighlightPoint(layer, current, reachablePoint));
                 unreachable.remove(current);
+                reachable.add(current);
             } else {
                 publish(new HighlightPoint(layer, current, notCovered));
                 reachable.remove(current);

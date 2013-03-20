@@ -28,7 +28,6 @@ public abstract class AbstractEvolution implements Runnable {
      * Probability of cross
      */
     protected double crossoverProbability = 0.5;
-    
     protected List<Node> nodes = null;
     private VertexContext context;
     private boolean[] currentCover;
@@ -97,22 +96,21 @@ public abstract class AbstractEvolution implements Runnable {
 
     public void updateMap(AbstractIndividual best) {
         boolean covered;
-        int id;
 
         context.setBestFitness(best.getFitness());
-        for (Node node : nodes) {
-            covered = best.getGen(node.getId());
-            id = node.getId();
+        for (int i = 0; i < StateSpace.nodesCount(); i++) {
+            covered = best.getGen(i);            
             //something is different, update map
-            if (covered != currentCover[id]) {
-                context.markNode(node, covered);
-                currentCover[id] = covered;
+            if (covered != currentCover[i]) {
+                context.markNode(StateSpace.getNode(i), covered);
+                currentCover[i] = covered;
             }
         }
+
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.getName()).append("[");
         sb.append("generations = ").append(getGenerations()).append("\n");
