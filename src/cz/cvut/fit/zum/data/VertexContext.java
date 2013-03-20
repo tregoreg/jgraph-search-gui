@@ -29,6 +29,7 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
     private Color nodeColor = new Color(0.0f, 0.0f, 0.0f);  // semi-transparent
     private HashSet<NodeImpl> cover;
     private HashSet<NodeImpl> reachable;
+    private HashSet<NodeImpl> unreachable;
     private double bestFitness;
     protected HashMap<String, Double> stats = new HashMap<String, Double>();
 
@@ -37,6 +38,8 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
         this.layer = layer;
         cover = new HashSet<NodeImpl>(StateSpace.nodesCount());
         reachable = new HashSet<NodeImpl>(StateSpace.nodesCount() / 2);
+        unreachable = new HashSet<NodeImpl>(StateSpace.nodesCount());
+        unreachable.addAll(StateSpace.getNodes());
         VisInfo visInfo = VisInfo.getInstance();
         notCovered = visInfo.createCircle(nodeColor);
         coveredPoint = visInfo.createCircle(Color.GREEN);
@@ -81,6 +84,7 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
             publish(new HighlightPoint(layer, current, coveredPoint));
             cover.add(current);
             reachable.remove(current); //remove if present
+            unreachable.remove(current);
             List<NodeImpl> nn = current.fastExpand(StateSpace.getNodes());
             for (NodeImpl to : nn) {
                 //highlight edge
@@ -90,39 +94,36 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
                     publish(new HighlightEdge(layer, current, to, Color.YELLOW));
                 } else {
                     publish(new HighlightEdge(layer, current, to, Color.GREEN));
-                }
-
-                //reachable nodes
-                if (!cover.contains(to)) {
+                    //point
                     publish(new HighlightPoint(layer, to, reachablePoint));
                     reachable.add(to);
+                    unreachable.remove(to);
                 }
             }
 
         } else {
             cover.remove(current);
-            //if (!reachable.contains(from)) {
-                
-                List<NodeImpl> nn = current.fastExpand(StateSpace.getNodes());
-                boolean neigourCovered = false;
-                for (NodeImpl to : nn) {                    
-                    //from is not in cover
-                    if (cover.contains(to)) {
-                        neigourCovered = true;
-                        publish(new HighlightEdge(layer, current, to, Color.GREEN));
-                    } else {
-                        publish(new HighlightEdge(layer, current, to, Color.RED));
-                    }
+
+            List<NodeImpl> nn = current.fastExpand(StateSpace.getNodes());
+            boolean neigourCovered = false;
+            for (NodeImpl to : nn) {
+                //from is not in cover
+                if (cover.contains(to)) {
+                    neigourCovered = true;
+                    publish(new HighlightEdge(layer, current, to, Color.GREEN));
+                } else {
+                    publish(new HighlightEdge(layer, current, to, Color.RED));
                 }
-                
-                if(neigourCovered){
-                    publish(new HighlightPoint(layer, current, reachablePoint));
-                }else{
-                    publish(new HighlightPoint(layer, current, notCovered));
-                    reachable.remove(current);
-                }
-                
-            //}
+            }
+
+            if (neigourCovered) {
+                publish(new HighlightPoint(layer, current, reachablePoint));
+                unreachable.remove(current);
+            } else {
+                publish(new HighlightPoint(layer, current, notCovered));
+                reachable.remove(current);
+                unreachable.add(current);
+            }
         }
         updateStats();
     }
@@ -134,7 +135,7 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
         stats.put("fitness", bestFitness);
         stats.put("coverage", cov);
         stats.put("reached", (double) reachable.size());
-
+        stats.put("unreachable", (double) unreachable.size());
         stats.put("time", (double) getTime());
 
         layer.fireEvolutionChanged(stats);
