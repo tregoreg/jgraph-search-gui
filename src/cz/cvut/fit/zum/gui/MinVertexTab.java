@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.openide.util.Exceptions;
@@ -80,18 +81,14 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
         btnStart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-              //  if (!started) {
+                if (!started) {
                     mapPanel.vertexCoverAlgorithmChanged(evolutionBox.getSelectedItem().toString(), true);
                     started = true;
-              /*    btnStart.setText("Stop");
+                    btnStart.setText("Stop");
                 } else {
                     mapPanel.getVertexCoverTask().setFinish(true);
                     btnStart.setEnabled(false);
-                    
-                    started = false;
-                    btnStart.setText("Start");
-                }*/
-
+                }
             }
         });
         algPanel.add(btnStart, c);
@@ -111,7 +108,7 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
                 mapPanel.vertexCoverAlgorithmChanged(evolutionBox.getSelectedItem().toString(), true);
             }
         });
-        if(evolutionBox.getSelectedItem() == null){
+        if (evolutionBox.getSelectedItem() == null) {
             throw new RuntimeException("Missing implementation of an Evolution algorithm");
         }
         mapPanel.vertexCoverAlgorithmChanged(evolutionBox.getSelectedItem().toString(), false);
@@ -269,5 +266,19 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
         lbFit.setText(String.format(frmFit, v));
         v = stats.get("time");
         lbTime.setText(String.format(frmTime, v));
+    }
+
+    @Override
+    public void evolutionFinished() {
+        btnStart.setText("Start");
+        started = false;
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                btnStart.setEnabled(true);
+            }
+        });
+
     }
 }

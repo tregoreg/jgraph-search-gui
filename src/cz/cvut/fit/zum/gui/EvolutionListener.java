@@ -10,4 +10,6 @@ import java.util.HashMap;
 public interface EvolutionListener extends EventListener {
 
     public void statsChanged(HashMap<String, Double> stats);
+    
+    public void evolutionFinished();
 }

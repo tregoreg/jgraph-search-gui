@@ -28,6 +28,7 @@ public class VertexCoverTask {
         evolution.setCrossoverProbability(crossover);
         evolution.setPopulationSize(population);
         evolution.setGenerations(generations);
+        evolution.setFinished(false);
         sLayer.updateLayer();
         //creates a new thread
         vctx = new VertexContext(sLayer, evolution);
@@ -52,8 +53,8 @@ public class VertexCoverTask {
     }
 
     public void setFinish(boolean b) {
-        vctx.getEvolution().setFinished(b);
         vctx.cancel(true);
+        vctx.getEvolution().setFinished(b);
     }
 
     public boolean isFinished() {

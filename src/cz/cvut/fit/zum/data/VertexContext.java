@@ -70,6 +70,8 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> {
     protected void done() {
         long time = endTime - startTime;
         System.out.println("Evolution time = " + time + " ms");
+        updateStats();
+        layer.enableSearchButton();        
     }
 
     public long getTime() {

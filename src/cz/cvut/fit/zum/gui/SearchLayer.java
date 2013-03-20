@@ -18,6 +18,7 @@ import cz.cvut.fit.zum.api.ga.AbstractEvolution;
 import cz.cvut.fit.zum.api.ga.VertexCoverTask;
 import cz.cvut.fit.zum.data.StateSpace;
 import java.util.HashMap;
+import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 
 /**
@@ -178,7 +179,7 @@ public class SearchLayer extends BufferedPanel {
      *
      * @param evolAlg
      */
-    public void vertexAlgorithmChanged(AbstractEvolution evolAlg, boolean run) {
+    public void vertexAlgorithmChanged(final AbstractEvolution evolAlg, boolean run) {
         if (run) {
             vctx.run(evolAlg);
         }
@@ -286,5 +287,14 @@ public class SearchLayer extends BufferedPanel {
 
     public VertexCoverTask getVertexCoverTask() {
         return vctx;
+    }
+
+    public void enableSearchButton() {
+        if (evolListeners != null) {
+            EvolutionListener[] list = evolListeners.getListeners(EvolutionListener.class);
+            for (EvolutionListener l : list) {
+                l.evolutionFinished();
+            }
+        }
     }
 }
