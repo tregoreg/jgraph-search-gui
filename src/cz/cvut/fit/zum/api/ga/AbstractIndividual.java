@@ -17,11 +17,13 @@ public abstract class AbstractIndividual implements Comparable<AbstractIndividua
     
     public abstract boolean getGen(int j);
     
+    public abstract int genSize();
+    
     public abstract AbstractIndividual deepCopy();
     
     public abstract List<AbstractIndividual> cross(AbstractIndividual i);
     
-    public abstract void mutate();
+    public abstract void mutate(int genId);
     
    
     /* ################################################################### */
