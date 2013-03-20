@@ -50,11 +50,15 @@ public abstract class BufferedPanel extends JPanel {
         }
 
     }
-    
+
     public void updateLayer() {
         //System.out.println(this.getClass().getName() + " layer update");
         bufferedImage = null;
         repaint();
+        panelResized();
+    }
+
+    protected void panelResized() {
     }
 
     /**

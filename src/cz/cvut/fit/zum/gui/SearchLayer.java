@@ -296,4 +296,11 @@ public class SearchLayer extends BufferedPanel {
             }
         }
     }
+    
+    @Override
+    public void panelResized(){
+        if(vctx != null){
+            vctx.panelResized();
+        }
+    }
 }

@@ -217,4 +217,9 @@ public class Context extends SwingWorker<Void, HighlightTask> implements TaskCon
         targetCheck(node);
         return isFinal(node.getId());
     }
+
+    @Override
+    public void panelResize() {
+       //@TODO implement
+    }
 }

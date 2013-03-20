@@ -34,4 +34,9 @@ public class LoaderContext implements TaskContext {
     public void setFinish(boolean interrupt) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public void panelResize() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

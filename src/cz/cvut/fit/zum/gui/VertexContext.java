@@ -50,6 +50,7 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
 
     @Override
     protected Void doInBackground() throws Exception {
+        panelResize();
         startTime = System.currentTimeMillis();
         endTime = startTime;
         evolution.run();
@@ -193,5 +194,43 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
     @Override
     public void setFinish(boolean interrupt) {
         cancel(interrupt);
+    }
+
+    @Override
+    public void panelResize() {
+        for (Node current : reachable) {
+            for (Node to : current.expand()) {
+                //from is not in cover
+                if (reachable.contains(to)) {
+                    publish(new HighlightEdge(layer, current, to, Color.RED));
+                }
+            }
+        }
+
+        for (Node current : unreachable) {
+            for (Node to : current.expand()) {
+                //from is not in cover
+                if (!cover.contains(to)) {
+                    publish(new HighlightEdge(layer, current, to, Color.RED));
+                }
+            }
+            publish(new HighlightPoint(layer, current, notCovered));
+        }
+
+        for (Node current : cover) {
+            for (Node to : current.expand()) {
+                //highlight edge
+
+                //both edge's nodes are covered
+                if (cover.contains(to)) {
+                    publish(new HighlightEdge(layer, current, to, Color.YELLOW));
+                } else {
+                    publish(new HighlightEdge(layer, current, to, Color.GREEN));
+                    //point
+                    publish(new HighlightPoint(layer, to, reachablePoint));
+                }
+            }
+            publish(new HighlightPoint(layer, current, coveredPoint));
+        }
     }
 }

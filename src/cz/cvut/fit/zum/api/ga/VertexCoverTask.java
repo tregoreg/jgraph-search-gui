@@ -65,4 +65,10 @@ public class VertexCoverTask {
         }
         return vctx.isDone();
     }
+    
+    public void panelResized(){
+        if(vctx != null){
+            vctx.panelResize();
+        }
+    }
 }

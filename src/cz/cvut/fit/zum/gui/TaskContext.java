@@ -18,4 +18,6 @@ public interface TaskContext {
      * @param interrupt 
      */
     public void setFinish(boolean interrupt);
+    
+    public void panelResize();
 }
