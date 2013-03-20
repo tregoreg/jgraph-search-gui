@@ -21,7 +21,7 @@ public abstract class AbstractIndividual implements Comparable<AbstractIndividua
     
     public abstract List<AbstractIndividual> cross(AbstractIndividual i);
     
-    public abstract void mutate(int genId);
+    public abstract void mutate();
     
    
     /* ################################################################### */
