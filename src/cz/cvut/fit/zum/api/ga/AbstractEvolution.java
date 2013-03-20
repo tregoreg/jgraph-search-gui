@@ -108,6 +108,10 @@ public abstract class AbstractEvolution implements Runnable {
         }
 
     }
+    
+    public void updateGenerationNumber(int num){
+        context.updateGeneration(num);
+    }
 
     @Override
     public String toString() {

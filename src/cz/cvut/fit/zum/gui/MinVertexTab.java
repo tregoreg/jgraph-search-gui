@@ -47,6 +47,8 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
     private String frmCrossover;
     private JLabel lbUnreachable;
     private String frmUnreachable;
+    private JLabel lbGeneration;
+    private String frmGeneration;
     private JPanel settings;
     private JSlider sliderPopulation;
     private JLabel lbPopulation;
@@ -127,6 +129,8 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
         lbReached = new JLabel(String.format(frmReached, 0, 0.0));
         frmUnreachable = "Unreachable: %d";
         lbUnreachable = new JLabel(String.format(frmUnreachable, 0, 0.0));
+        frmGeneration = "Generation: %d";
+        lbGeneration = new JLabel(String.format(frmGeneration, 0, 0.0));
         frmFit = "Fitness: %10.2f";
         lbFit = new JLabel(String.format(frmFit, 0.0));
         frmTime = "Time: %10.0f ms";
@@ -137,6 +141,7 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
         statsPanel.add(lbReached);
         statsPanel.add(lbUnreachable);
         statsPanel.add(lbFit);
+        statsPanel.add(lbGeneration);
         statsPanel.add(lbTime);
         this.add(statsPanel);
         mapPanel.addEvolutionListener(this);
@@ -262,6 +267,8 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
         lbReached.setText(String.format(frmReached, (int) v, stats.get("coverage")));
         v = stats.get("unreachable");
         lbUnreachable.setText(String.format(frmUnreachable, (int) v));
+        v = stats.get("generation");
+        lbGeneration.setText(String.format(frmGeneration, (int) v));
         v = stats.get("fitness");
         lbFit.setText(String.format(frmFit, v));
         v = stats.get("time");

@@ -31,6 +31,7 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
     private HashSet<Node> reachable;
     private HashSet<Node> unreachable;
     private double bestFitness;
+    private int generation = 0;
     protected HashMap<String, Double> stats = new HashMap<String, Double>();
 
     public VertexContext(SearchLayer layer, AbstractEvolution evolution) {
@@ -174,6 +175,7 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
         stats.put("reached", (double) reachable.size());
         stats.put("unreachable", (double) unreachable.size());
         stats.put("time", (double) getTime());
+        stats.put("generation", (double) generation);
 
         layer.fireEvolutionChanged(stats);
     }
@@ -232,5 +234,14 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
             }
             publish(new HighlightPoint(layer, current, coveredPoint));
         }
+    }
+
+    /**
+     * Updates generations counter
+     * @param num 
+     */
+    public void updateGeneration(int num) {
+        generation = num;
+        updateStats();
     }
 }
