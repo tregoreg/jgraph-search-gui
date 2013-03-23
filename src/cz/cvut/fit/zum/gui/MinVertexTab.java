@@ -247,7 +247,7 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
         });
         c.gridx = 0;
         c.gridy = 7;
-        settings.add(sliderGenerations, c);
+        settings.add(sliderGenerations, c); 
         mapPanel.getVertexCoverTask().setGenerations(sliderGenerations.getValue());
 
 

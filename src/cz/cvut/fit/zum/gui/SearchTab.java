@@ -144,7 +144,7 @@ public class SearchTab extends JPanel implements AlgorithmListener {
 
         frmDelay = "Delay: %4d ms";
         lbAlg = new JLabel(String.format(frmDelay, (int) delaySlider.getValue()));
-        c.fill = GridBagConstraints.NONE;
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 3;
         c.gridy = 0;
         this.add(lbAlg, c);
