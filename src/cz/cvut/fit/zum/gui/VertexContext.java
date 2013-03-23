@@ -44,13 +44,13 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
         notCovered = visInfo.createCircle(nodeColor);
         coveredPoint = visInfo.createCircle(Color.GREEN);
         reachablePoint = visInfo.createCircle(Color.BLUE);
+        unreachable.addAll(StateSpace.getNodes());
     }
 
     public final void initSpace() {
         cover = new HashSet<Node>(StateSpace.nodesCount());
         reachable = new HashSet<Node>(StateSpace.nodesCount() / 2);
         unreachable = new HashSet<Node>(StateSpace.nodesCount());
-        unreachable.addAll(StateSpace.getNodes());
     }
 
     @Override

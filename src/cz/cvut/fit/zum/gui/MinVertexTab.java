@@ -284,7 +284,7 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
             @Override
             public void run() {
                 btnStart.setEnabled(true);
-                mapPanel.resetMap();
+                //mapPanel.resetMap();
             }
         });
 
