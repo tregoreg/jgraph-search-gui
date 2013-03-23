@@ -157,7 +157,7 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
         c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 0;
         c.gridy = 0;
-        c.fill = GridBagConstraints.NONE;
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.LINE_START;
 
         settings = new JPanel();
@@ -181,7 +181,7 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
 
         frmMutation = "Mutation prob.: %2d%%";
         lbMutation = new JLabel(String.format(frmMutation, (int) sliderMutation.getValue()));
-        c.fill = GridBagConstraints.NONE;
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
         c.gridy = 0;
         settings.add(lbMutation, c);
@@ -205,7 +205,7 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
 
         frmCrossover = "Crossover prob.: %2d%%";
         lbCrossover = new JLabel(String.format(frmCrossover, (int) sliderCrossover.getValue()));
-        c.fill = GridBagConstraints.NONE;
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
         c.gridy = 2;
         settings.add(lbCrossover, c);
@@ -229,7 +229,7 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
 
         frmPopulation = "Population: %3d";
         lbPopulation = new JLabel(String.format(frmPopulation, (int) sliderPopulation.getValue()));
-        c.fill = GridBagConstraints.NONE;
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
         c.gridy = 4;
         settings.add(lbPopulation, c);
@@ -253,7 +253,7 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
 
         frmGenerations = "Generation: %3d";
         lbGenerations = new JLabel(String.format(frmGenerations, (int) sliderGenerations.getValue()));
-        c.fill = GridBagConstraints.NONE;
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
         c.gridy = 6;
         settings.add(lbGenerations, c);
