@@ -77,7 +77,7 @@ public class SearchTab extends JPanel implements AlgorithmListener {
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mapPanel.resetPath();
+                mapPanel.resetMap();
             }
         });
         c.gridy = 1;

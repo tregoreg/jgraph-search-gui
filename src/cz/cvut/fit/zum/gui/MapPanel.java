@@ -48,7 +48,7 @@ public class MapPanel extends JLayeredPane {
         //layer with nodes and edges
         gridLayer = new GridLayer(minSize);
         add(gridLayer, c, 0);
-        searchLayer = new SearchLayer(minSize);
+        searchLayer = new SearchLayer(minSize, gridLayer);
         add(searchLayer, c, 0);
         setPreferredSize(minSize);
         Rectangle bounds = getBounds();
@@ -89,7 +89,7 @@ public class MapPanel extends JLayeredPane {
         }
     }
 
-    public void resetPath() {
+    public void resetMap() {
         searchLayer.clearSelection();
         searchLayer.updateLayer();
         gridLayer.updateLayer();

@@ -12,6 +12,7 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import cz.cvut.fit.zum.data.Edge;
 import cz.cvut.fit.zum.data.NodeImpl;
+import java.awt.Color;
 
 /**
  *
@@ -22,6 +23,7 @@ public class GridLayer extends BufferedPanel {
     private static final long serialVersionUID = -2300535687309104278L;
     private VisInfo visInfo;
     private BufferedImage buffCircle;
+    private Shape line;
 
     public GridLayer(Dimension minSize) {
         setSize(minSize);
@@ -47,7 +49,6 @@ public class GridLayer extends BufferedPanel {
 
             AffineTransform at = visInfo.getTranformation();
             Point2D from;
-            Shape line;
             for (Node node : visInfo.getNodes()) {
                 from = node.getPoint();
 
@@ -67,6 +68,12 @@ public class GridLayer extends BufferedPanel {
                 }
             }
         }
-        g.dispose();
+        //g.dispose();
+    }
+
+    protected void higlightEdge(final Node start, final Node end, Color color) {
+        graphics.setColor(color);
+        line = new Line2D.Double(start.getPoint(), end.getPoint());
+        graphics.draw(line);
     }
 }

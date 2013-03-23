@@ -30,9 +30,9 @@ public class VertexCoverTask {
         evolution.setPopulationSize(population);
         evolution.setGenerations(generations);
         evolution.setFinished(false);
-        sLayer.updateLayer();
         //creates a new thread
         vctx = new VertexContext(sLayer, evolution);
+        sLayer.updateLayer();
         NodeImpl.setContext(vctx);
         evolution.setVertexContext(vctx);
         vctx.execute();
@@ -65,10 +65,16 @@ public class VertexCoverTask {
         }
         return vctx.isDone();
     }
-    
-    public void panelResized(){
-        if(vctx != null){
+
+    public void panelResized() {
+        if (vctx != null) {
             vctx.panelResize();
+        }
+    }
+
+    public void reset() {
+        if (vctx != null) {
+            vctx.initSpace();
         }
     }
 }

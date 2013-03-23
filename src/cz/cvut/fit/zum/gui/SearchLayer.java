@@ -3,11 +3,9 @@ package cz.cvut.fit.zum.gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.Shape;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import cz.cvut.fit.zum.api.AbstractAlgorithm;
@@ -34,7 +32,6 @@ public class SearchLayer extends BufferedPanel {
     protected VisInfo visInfo;
     private AffineTransform at;
     private Node node;
-    private Shape line;
     private Color pathColor;
     protected boolean searchFinished = false;
     private AbstractAlgorithm alg;
@@ -42,9 +39,11 @@ public class SearchLayer extends BufferedPanel {
     private long delay;
     private Context ctx;
     private VertexCoverTask vctx;
+    private GridLayer roads;
 
-    public SearchLayer(Dimension dim) {
+    public SearchLayer(Dimension dim, GridLayer roadsLayer) {
         setSize(dim);
+        this.roads = roadsLayer;
         visInfo = VisInfo.getInstance();
         initComponents();
 
@@ -109,9 +108,7 @@ public class SearchLayer extends BufferedPanel {
     }
 
     protected void higlightEdge(final Node start, final Node end, Color color) {
-        graphics.setColor(color);
-        line = new Line2D.Double(start.getPoint(), end.getPoint());
-        graphics.draw(line);
+        roads.higlightEdge(start, end, color);
     }
 
     void stopSearch() {
@@ -141,8 +138,7 @@ public class SearchLayer extends BufferedPanel {
             prev = path.get(i++);
             if (i < length) {
                 next = path.get(i);
-                line = new Line2D.Double(prev.getPoint(), next.getPoint());
-                graphics.draw(line);
+                roads.higlightEdge(prev, next, pathColor);
                 distance += euclideanDist(prev, next);
             }
         } while (i < length);

@@ -37,16 +37,20 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
     public VertexContext(SearchLayer layer, AbstractEvolution evolution) {
         this.evolution = evolution;
         this.layer = layer;
-        cover = new HashSet<Node>(StateSpace.nodesCount());
-        reachable = new HashSet<Node>(StateSpace.nodesCount() / 2);
-        unreachable = new HashSet<Node>(StateSpace.nodesCount());
-        unreachable.addAll(StateSpace.getNodes());
+        initSpace();
         VisInfo visInfo = VisInfo.getInstance();
         //uncovered nodes
         //visInfo.setNodeColor(nodeColor);        
         notCovered = visInfo.createCircle(nodeColor);
         coveredPoint = visInfo.createCircle(Color.GREEN);
         reachablePoint = visInfo.createCircle(Color.BLUE);
+    }
+
+    public final void initSpace() {
+        cover = new HashSet<Node>(StateSpace.nodesCount());
+        reachable = new HashSet<Node>(StateSpace.nodesCount() / 2);
+        unreachable = new HashSet<Node>(StateSpace.nodesCount());
+        unreachable.addAll(StateSpace.getNodes());
     }
 
     @Override
@@ -240,7 +244,8 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
 
     /**
      * Updates generations counter
-     * @param num 
+     *
+     * @param num
      */
     public void updateGeneration(int num) {
         generation = num;
