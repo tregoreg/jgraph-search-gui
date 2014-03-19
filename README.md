@@ -28,3 +28,11 @@ full class name. Then your algorithm could be in different jar, just make sure i
 
 
 ![jgraph-search-gui preview](https://raw.github.com/deric/jgraph-search-gui/screenshots/screenshots/jgraph-gui-0.1.0.png)
+
+## Build
+
+single jar with dependencies:
+
+```
+$ mvn clean compile assembly:single
+```
