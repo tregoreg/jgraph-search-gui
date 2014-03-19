@@ -18,7 +18,7 @@ import javax.swing.SwingWorker;
  *
  * @author Tomas Barton
  */
-public class Context extends SwingWorker<Void, HighlightTask> implements TaskContext {
+public class SearchContext extends SwingWorker<Void, HighlightTask> implements TaskContext {
 
     private Algorithm algorithm;
     private final List<Node> nodes;
@@ -37,7 +37,7 @@ public class Context extends SwingWorker<Void, HighlightTask> implements TaskCon
     private BufferedImage visited;
     private Color edgeColor = new Color(255, 0, 255);
 
-    public Context(AbstractAlgorithm algorithm, Node startNode, Node endNode, SearchLayer layer, long delay) {
+    public SearchContext(AbstractAlgorithm algorithm, Node startNode, Node endNode, SearchLayer layer, long delay) {
         this.algorithm = algorithm;
         VisInfo visInfo = VisInfo.getInstance();
         this.nodes = visInfo.getNodes();

@@ -37,7 +37,7 @@ public class SearchLayer extends BufferedPanel {
     private AbstractAlgorithm alg;
     protected HashMap<String, Double> stats = new HashMap<String, Double>();
     private long delay;
-    private Context ctx;
+    private SearchContext ctx;
     private VertexCoverTask vctx;
     private GridLayer roads;
 
@@ -53,11 +53,13 @@ public class SearchLayer extends BufferedPanel {
 
                 node = visInfo.findNode(me.getX(), me.getY(), getSize());
                 if (node != null) {
-                    if (searchFinished) {
-                        updateLayer(); //clean canvas
-                        searchFinished = false;
-                    } else {
-                        stopSearch();
+                    if (ctx != null) {
+                        if (searchFinished) {
+                            updateLayer(); //clean canvas
+                            searchFinished = false;
+                        } else {
+                            stopSearch();
+                        }
                     }
                     final Node n = node;
                     highlightPoint(n, startPoint);
@@ -187,7 +189,7 @@ public class SearchLayer extends BufferedPanel {
         if (ctx != null) {
             ctx.cancel(true);
         }
-        ctx = new Context(algorithm, source, target, this, delay);
+        ctx = new SearchContext(algorithm, source, target, this, delay);
         NodeImpl.setContext(ctx);
         fireAlgEvent(AlgorithmEvents.STARTED);
         System.out.println("Starting search...");
@@ -226,7 +228,7 @@ public class SearchLayer extends BufferedPanel {
         this.delay = delay;
     }
 
-    protected void updateStats(Context ctx) {
+    protected void updateStats(SearchContext ctx) {
         double expanded = ctx.getExpandCalls();
         double cov = expanded / (double) StateSpace.nodesCount() * 100;
         stats.put("explored", (double) ctx.getExploredNodes());
@@ -292,10 +294,10 @@ public class SearchLayer extends BufferedPanel {
             }
         }
     }
-    
+
     @Override
-    public void panelResized(){
-        if(vctx != null){
+    public void panelResized() {
+        if (vctx != null) {
             vctx.panelResized();
         }
     }
