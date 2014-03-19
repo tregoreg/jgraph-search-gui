@@ -18,7 +18,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -110,15 +109,14 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
                 mapPanel.vertexCoverAlgorithmChanged(evolutionBox.getSelectedItem().toString(), true);
             }
         });
-        if (evolutionBox.getSelectedItem() == null) {
-            throw new RuntimeException("Missing implementation of an Evolution algorithm");
+        if (evolutionBox.getSelectedItem() != null) {
+            mapPanel.vertexCoverAlgorithmChanged(evolutionBox.getSelectedItem().toString(), false);
+            algPanel.add(evolutionBox, c);
         }
-        mapPanel.vertexCoverAlgorithmChanged(evolutionBox.getSelectedItem().toString(), false);
-        algPanel.add(evolutionBox, c);
+
         this.add(algPanel);
         //set current algorithm
         //mapPanel.vertexCoverAlgorithmChanged(evolutionBox.getSelectedItem().toString());
-
 
         createSettingsPanel();
         this.add(settings);
@@ -178,7 +176,6 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
         settings.add(sliderMutation, c);
         mapPanel.getVertexCoverTask().setMutationProbability(sliderMutation.getValue());
 
-
         frmMutation = "Mutation prob.: %2d%%";
         lbMutation = new JLabel(String.format(frmMutation, (int) sliderMutation.getValue()));
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -201,7 +198,6 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
         c.gridy = 3;
         settings.add(sliderCrossover, c);
         mapPanel.getVertexCoverTask().setCrossoverProbability(sliderCrossover.getValue());
-
 
         frmCrossover = "Crossover prob.: %2d%%";
         lbCrossover = new JLabel(String.format(frmCrossover, (int) sliderCrossover.getValue()));
@@ -226,7 +222,6 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
         settings.add(sliderPopulation, c);
         mapPanel.getVertexCoverTask().setPopulationSize(sliderPopulation.getValue());
 
-
         frmPopulation = "Population: %3d";
         lbPopulation = new JLabel(String.format(frmPopulation, (int) sliderPopulation.getValue()));
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -247,9 +242,8 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
         });
         c.gridx = 0;
         c.gridy = 7;
-        settings.add(sliderGenerations, c); 
+        settings.add(sliderGenerations, c);
         mapPanel.getVertexCoverTask().setGenerations(sliderGenerations.getValue());
-
 
         frmGenerations = "Generation: %3d";
         lbGenerations = new JLabel(String.format(frmGenerations, (int) sliderGenerations.getValue()));
