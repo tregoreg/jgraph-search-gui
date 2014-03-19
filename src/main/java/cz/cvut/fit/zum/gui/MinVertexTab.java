@@ -111,9 +111,8 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
         });
         if (evolutionBox.getSelectedItem() != null) {
             mapPanel.vertexCoverAlgorithmChanged(evolutionBox.getSelectedItem().toString(), false);
-            algPanel.add(evolutionBox, c);
         }
-
+        algPanel.add(evolutionBox, c);
         this.add(algPanel);
         //set current algorithm
         //mapPanel.vertexCoverAlgorithmChanged(evolutionBox.getSelectedItem().toString());
