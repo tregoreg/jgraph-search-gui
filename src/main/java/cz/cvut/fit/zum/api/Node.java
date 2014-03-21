@@ -1,7 +1,8 @@
 package cz.cvut.fit.zum.api;
 
 /**
- *
+ * Class representing a node of a map.
+ * 
  * @author Tomas Barton
  */
 import cz.cvut.fit.zum.data.Edge;
@@ -11,22 +12,23 @@ import java.util.List;
 public abstract interface Node {
 
     /**
-     *
-     * @return unique ID of Node
+     * Returns the index of the node in the graph, starting from 0.
+     * 
+     * @return unique index of the node
      */
     public int getId();
 
     /**
-     * X coordinate on a map in range <0;1>
+     * The X-coordinate of the node on a map from range [0.0; 1.0]
      *
-     * @return x coordinate
+     * @return The x-coordinate
      */
     public abstract double getX();
 
     /**
-     * Y coordinate on a map in range <0;1>
+     * The Y-coordinate of the node on a map from range [0.0; 1.0]
      *
-     * @return y coordinate
+     * @return The y-coordinate
      */
     public abstract double getY();
 
@@ -38,17 +40,18 @@ public abstract interface Node {
     public abstract List<Node> expand();
 
     /**
-     * Return true when final target is reached, otherwise false
+     * Test whether this is a target node for a path-searching algorithm.
      *
-     * @return
+     * @return <code>true</code> if this is the target, <code>false</code>
+     * otherwise
      */
     public abstract boolean isTarget();
 
     /**
      * Return true when other is the same as this, otherwise false
      *
-     * @param other
-     * @return true when other is same as this object
+     * @param other The other node to be tested for equality with the current
+     * @return <code>true</code> when other is same as this object
      */
     @Override
     public abstract boolean equals(Object other);
@@ -57,12 +60,16 @@ public abstract interface Node {
     public int hashCode();
 
     /**
-     *
-     * @return coordinate of a point
+     * Returns the (X,Y)-coordinates of the node as a <code>Point2D</code>
+     * object.
+     * 
+     * @return The coordinates object of the node
      */
     public abstract Point2D getPoint();
     
     /**
+     * Gets the list of edges which are in incidence with (i.e. start or end in)
+     * the node.
      * 
      * @return List of Node's edges
      */

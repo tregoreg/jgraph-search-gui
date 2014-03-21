@@ -31,11 +31,11 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
     private MapPanel mapPanel;
     private JPanel statsPanel;
     private JLabel lbNodes;
-    private JLabel lbReached;
+    //private JLabel lbReached;
     private JLabel lbFit;
     private JLabel lbTime;
     private String frmNodes;
-    private String frmReached;
+    //private String frmReached;
     private String frmFit;
     private String frmTime;
     private JSlider sliderMutation;
@@ -44,8 +44,13 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
     private String frmMutation;
     private JLabel lbCrossover;
     private String frmCrossover;
-    private JLabel lbUnreachable;
-    private String frmUnreachable;
+    //private JLabel lbUnreachable;
+    //private String frmUnreachable;
+    private String frmCoveredEdges;
+    private JLabel lbCoveredEdges;
+    private String frmUncoveredEdges;
+    private JLabel lbUncoveredEdges;
+    
     private JLabel lbGeneration;
     private String frmGeneration;
     private JPanel settings;
@@ -96,7 +101,7 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
 
         //evolution alg. box
         evolutionBox = new JComboBox();
-        EvolutionFactory ef = EvolutionFactory.getDefault();
+        EvolutionFactory ef = EvolutionFactory.getInstance();
         List<String> providers = ef.getProviders();
         for (String p : providers) {
             evolutionBox.addItem(p);
@@ -122,10 +127,18 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
 
         frmNodes = "Vertex cover:  %d (%4.1f%%)";
         lbNodes = new JLabel(String.format(frmNodes, 0, 0.0));
-        frmReached = "Reached nodes: %d";
-        lbReached = new JLabel(String.format(frmReached, 0, 0.0));
-        frmUnreachable = "Unreachable: %d";
-        lbUnreachable = new JLabel(String.format(frmUnreachable, 0, 0.0));
+        //frmReached = "Reached nodes: %d";
+        //lbReached = new JLabel(String.format(frmReached, 0, 0.0));
+        //frmUnreachable = "Unreachable: %d";
+        //lbUnreachable = new JLabel(String.format(frmUnreachable, 0, 0.0));
+        
+        frmCoveredEdges = "Covered edges: %d";
+        lbCoveredEdges = new JLabel(String.format(frmCoveredEdges, 0));
+        
+        frmUncoveredEdges = "Uncovered edges: %d";
+        lbUncoveredEdges = new JLabel(String.format(frmUncoveredEdges, 0));
+        
+        
         frmGeneration = "Generation: %d";
         lbGeneration = new JLabel(String.format(frmGeneration, 0, 0.0));
         frmFit = "Fitness: %10.2f";
@@ -135,11 +148,18 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
         statsPanel = new JPanel();
         statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.Y_AXIS));
         statsPanel.add(lbNodes);
-        statsPanel.add(lbReached);
-        statsPanel.add(lbUnreachable);
+        
+        //statsPanel.add(lbReached);
+        //statsPanel.add(lbUnreachable);
+        
+        statsPanel.add(lbCoveredEdges);
+        statsPanel.add(lbUncoveredEdges);
+        
         statsPanel.add(lbFit);
         statsPanel.add(lbGeneration);
         statsPanel.add(lbTime);
+        
+        
         this.add(statsPanel);
         mapPanel.addEvolutionListener(this);
 
@@ -160,7 +180,7 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
         settings = new JPanel();
         settings.setLayout(new GridBagLayout());
 
-        sliderMutation = new JSlider(SwingConstants.HORIZONTAL, 0, 100, 30);
+        sliderMutation = new JSlider(SwingConstants.HORIZONTAL, 0, 100, 2);
         sliderMutation.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -175,7 +195,7 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
         settings.add(sliderMutation, c);
         mapPanel.getVertexCoverTask().setMutationProbability(sliderMutation.getValue());
 
-        frmMutation = "Mutation prob.: %2d%%";
+        frmMutation = "Mutation prob.: %2d %%";
         lbMutation = new JLabel(String.format(frmMutation, (int) sliderMutation.getValue()));
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
@@ -198,7 +218,7 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
         settings.add(sliderCrossover, c);
         mapPanel.getVertexCoverTask().setCrossoverProbability(sliderCrossover.getValue());
 
-        frmCrossover = "Crossover prob.: %2d%%";
+        frmCrossover = "Crossover prob.: %2d %%";
         lbCrossover = new JLabel(String.format(frmCrossover, (int) sliderCrossover.getValue()));
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
@@ -221,7 +241,7 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
         settings.add(sliderPopulation, c);
         mapPanel.getVertexCoverTask().setPopulationSize(sliderPopulation.getValue());
 
-        frmPopulation = "Population: %3d";
+        frmPopulation = "Population size: %3d";
         lbPopulation = new JLabel(String.format(frmPopulation, (int) sliderPopulation.getValue()));
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
@@ -244,7 +264,7 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
         settings.add(sliderGenerations, c);
         mapPanel.getVertexCoverTask().setGenerations(sliderGenerations.getValue());
 
-        frmGenerations = "Generation: %3d";
+        frmGenerations = "Number of generations: %3d";
         lbGenerations = new JLabel(String.format(frmGenerations, (int) sliderGenerations.getValue()));
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
@@ -256,10 +276,18 @@ public class MinVertexTab extends JPanel implements EvolutionListener {
     public void statsChanged(HashMap<String, Double> stats) {
         double v = stats.get("cover");
         lbNodes.setText(String.format(frmNodes, (int) v, stats.get("coverage")));
-        v = stats.get("reached");
-        lbReached.setText(String.format(frmReached, (int) v, stats.get("coverage")));
-        v = stats.get("unreachable");
-        lbUnreachable.setText(String.format(frmUnreachable, (int) v));
+        
+        //v = stats.get("reached");
+        //lbReached.setText(String.format(frmReached, (int) v, stats.get("coverage")));
+        //v = stats.get("unreachable");
+        //lbUnreachable.setText(String.format(frmUnreachable, (int) v));
+        
+        v = stats.get("coveredEdges");
+        lbCoveredEdges.setText(String.format(frmCoveredEdges, (int) v));
+
+        v = stats.get("uncoveredEdges");
+        lbUncoveredEdges.setText(String.format(frmUncoveredEdges, (int) v));
+
         v = stats.get("generation");
         lbGeneration.setText(String.format(frmGeneration, (int) v));
         v = stats.get("fitness");

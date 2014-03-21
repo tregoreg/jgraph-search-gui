@@ -3,7 +3,8 @@ package cz.cvut.fit.zum.api.ga;
 import java.util.Arrays;
 
 /**
- *
+ * Population of individuals used by the evolutionary algorithm.
+ * 
  * @author Tomas Barton
  */
 public class AbstractPopulation {
@@ -29,9 +30,10 @@ public class AbstractPopulation {
     }
 
     /**
-     * Method counts fitness of each individual and averages it.
+     * Computes an average fitness of all the individuals in the population,
+     * using their <code>getFitness</code> method.
      *
-     * @return average fitness value
+     * @return average fitness in the population
      */
     public double getAvgFitness() {
         avgFitness = 0;
@@ -45,14 +47,16 @@ public class AbstractPopulation {
     }
 
     /**
-     * Returns best individual from population
+     * Returns the best individual (the elite) currently present in the
+     * population, based of the values returned by the <code>getFitness</code>
+     * method.
      *
-     * @return best individual
+     * @return The elite individual
      */
     public AbstractIndividual getBestIndividual() {
         AbstractIndividual best = this.individuals[0];
         for (int i = 0; i < this.individuals.length; i++) {
-            if (this.individuals[i].getFitness() > best.getFitness()) {
+            if (Double.isNaN(best.getFitness()) || this.individuals[i].getFitness() > best.getFitness()) {
                 best = this.individuals[i];
             }
         }
@@ -60,33 +64,64 @@ public class AbstractPopulation {
     }
 
     /**
-     * This methods needs that Individual implements interface Comparable.
+     * Internally sorts the individuals in the population according to their
+     * fitness values
      */
     public void sortByFitness() {
         Arrays.sort(individuals);
     }
 
+    /**
+     * Gets a reference to the internal array of individuals.
+     * 
+     * @return The array of individuals
+     */
     public AbstractIndividual[] getIndividuals() {
         return individuals;
     }
-
     
-    public int individualsLength(){
+    /**
+     * Gets the number of individuals in the population.
+     * 
+     * @return Population size
+     */
+    public int size(){
         return individuals.length;
     }
-    
+
+    /**
+     * Gets an individual at a specified index.
+     * 
+     * @param idx The index of the individual to be returned
+     * @return The individual at the index given
+     */
     public AbstractIndividual getIndividual(int idx){
         return this.individuals[idx];
     }
     
-    public void setIndividuals(int index, AbstractIndividual individual){
+    /**
+     * 
+     * @param index
+     * @param individual 
+     */
+    public void setIndividualAt(int index, AbstractIndividual individual){
         individuals[index] = individual;
     }
 
+    /**
+     * Gets the fitness of the elite individual in the population.
+     * 
+     * @return Fitness of the fittest individual
+     */
     public double getBestFitness() {
         return bestFitness;
     }
 
+    /**
+     * Sets the fitness of the elite individual in the population.
+     * 
+     * @param bestFitness The new elite fitness
+     */
     public void setBestFitness(double bestFitness) {
         this.bestFitness = bestFitness;
     }

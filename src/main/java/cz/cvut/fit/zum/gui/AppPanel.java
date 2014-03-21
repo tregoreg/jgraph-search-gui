@@ -17,7 +17,7 @@ public class AppPanel extends JPanel {
     private static final long serialVersionUID = -8338182648645369875L;
     private JTabbedPane jTabs;
     private MapPanel mapPanel;
-    private SearchTab searchTab;
+    //private SearchTab searchTab;
     private MinVertexTab vertexTab;
     private Dimension mapSize;
 
@@ -48,11 +48,11 @@ public class AppPanel extends JPanel {
         mapConstraint.weighty = 1.0D;
         mapPanel = new MapPanel();
 
-        searchTab = new SearchTab(mapPanel);
-        jTabs.add("Graph Search", searchTab);
+        /*searchTab = new SearchTab(mapPanel);
+        jTabs.add("Graph Search", searchTab);*/
         vertexTab = new MinVertexTab(mapPanel);
         jTabs.add("Min-Vertex Cover", vertexTab);
-        jTabs.setSelectedIndex(1); //vertex cover problem
+        jTabs.setSelectedIndex(0); //vertex cover problem
         
         add(jTabs, tabsPanelConstraint);
         add(mapPanel, mapConstraint);

@@ -30,6 +30,8 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
     private HashSet<Node> cover;
     private HashSet<Node> reachable;
     private HashSet<Node> unreachable;
+    private HashSet<Edge> coveredEdges;
+    private HashSet<Edge> uncoveredEdges;
     private double bestFitness;
     private int generation = 0;
     protected HashMap<String, Double> stats = new HashMap<String, Double>();
@@ -51,6 +53,8 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
         cover = new HashSet<Node>(StateSpace.nodesCount());
         reachable = new HashSet<Node>(StateSpace.nodesCount() / 2);
         unreachable = new HashSet<Node>(StateSpace.nodesCount());
+        coveredEdges = new HashSet<Edge>(StateSpace.edgesCount());
+        uncoveredEdges = new HashSet<Edge>(StateSpace.edgesCount());
     }
 
     @Override
@@ -124,8 +128,14 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
                     publish(new HighlightPoint(layer, to, reachablePoint));
                     reachable.add(to);
                     unreachable.remove(to);
-                }
+                }                
             }
+            
+            for(Edge e : current.getEdges()) {
+                coveredEdges.add(e);
+                uncoveredEdges.remove(e); // remove if present
+            }
+
         } else {
             cover.remove(current);
 
@@ -156,6 +166,7 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
                 }
             }
 
+
             if (coveredByNeighbour) {
                 publish(new HighlightPoint(layer, current, reachablePoint));
                 unreachable.remove(current);
@@ -165,10 +176,20 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
                 reachable.remove(current);
                 unreachable.add(current);
             }
+            
+            for(Edge e : current.getEdges()) {             
+                if(!cover.contains(StateSpace.getNode(e.getFromId())) &&
+                   !cover.contains(StateSpace.getNode(e.getToId()))) {
+                    
+                    coveredEdges.remove(e);
+                    uncoveredEdges.add(e);
+                }
+            }            
         }
         updateStats();
     }
-
+    
+    
     protected void updateStats() {
         double covSize = cover.size();
         double cov = covSize / (double) StateSpace.nodesCount() * 100;
@@ -176,6 +197,8 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
         stats.put("fitness", bestFitness);
         stats.put("coverage", cov);
         stats.put("reached", (double) reachable.size());
+        stats.put("coveredEdges", (double)coveredEdges.size());
+        stats.put("uncoveredEdges", (double)uncoveredEdges.size());
         stats.put("unreachable", (double) unreachable.size());
         double sec = getTime() / 1000.0;
         stats.put("time", sec);

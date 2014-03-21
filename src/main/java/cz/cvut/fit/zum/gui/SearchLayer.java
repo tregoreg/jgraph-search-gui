@@ -47,7 +47,7 @@ public class SearchLayer extends BufferedPanel {
         visInfo = VisInfo.getInstance();
         initComponents();
 
-        addMouseListener(new MouseAdapter() {
+        /*addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent me) {
 
@@ -77,7 +77,7 @@ public class SearchLayer extends BufferedPanel {
                     }
                 }
             }
-        });
+        });*/
     }
 
     private void initComponents() {

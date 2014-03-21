@@ -58,7 +58,7 @@ public class MapPanel extends JLayeredPane {
     }
 
     public void updateSize(Dimension dim) {
-        int min = Math.min(dim.width, dim.height);
+        int min = Math.min(dim.width, dim.height - 115);
         size.width = min;
         size.height = min;
         //when size changes, we need to rescale points
@@ -83,7 +83,7 @@ public class MapPanel extends JLayeredPane {
     }
 
     public void vertexCoverAlgorithmChanged(String algName, boolean run) {
-        AbstractEvolution alg = EvolutionFactory.getDefault().getProvider(algName);
+        AbstractEvolution alg = EvolutionFactory.getInstance().getProvider(algName);
         if (alg != null) {
             searchLayer.vertexAlgorithmChanged(alg, run);
         }

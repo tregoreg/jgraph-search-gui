@@ -13,7 +13,7 @@ public class EvolutionFactory extends ServiceFactory<AbstractEvolution> {
 
     private static EvolutionFactory instance;
 
-    public static EvolutionFactory getDefault() {
+    public static EvolutionFactory getInstance() {
         if (instance == null) {
             instance = new EvolutionFactory();
         }
