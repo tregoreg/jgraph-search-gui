@@ -34,7 +34,6 @@ public class ZumGraphFrame extends JFrame {
         }
         StateSpace.setNodes(nodes.getNodes());
         System.out.println("Loaded " + StateSpace.nodesCount() + " nodes");
-
         appPanel = new AppPanel();
         add(appPanel);
 
