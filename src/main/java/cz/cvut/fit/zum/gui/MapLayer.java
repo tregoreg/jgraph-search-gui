@@ -30,7 +30,8 @@ public class MapLayer extends BufferedPanel {
     }
 
     private void loadTexture() {
-        String imgFilename = "/cz/cvut/fit/island_texture.png";
+        //String imgFilename = "/cz/cvut/fit/island_texture.png";
+        String imgFilename = "/cz/cvut/fit/earth.png";
         try {
             image = ImageIO.read(getClass().getResourceAsStream(imgFilename));
 

@@ -47,6 +47,7 @@ public class VertexContext extends SwingWorker<Void, HighlightTask> implements T
         coveredPoint = visInfo.createCircle(Color.GREEN);
         reachablePoint = visInfo.createCircle(Color.BLUE);
         unreachable.addAll(StateSpace.getNodes());
+        uncoveredEdges.addAll(StateSpace.getEdges());
     }
 
     public final void initSpace() {

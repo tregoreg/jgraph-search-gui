@@ -49,7 +49,8 @@ public class ZumGraphFrame extends JFrame {
 
     private File loadXmlResource() {
         File nodesFile = null;
-        String resource = "/cz/cvut/fit/nodes.xml";
+        String resource = "/cz/cvut/fit/earth-nodes.xml";
+        //String resource = "/cz/cvut/fit/nodes.xml";
         URL res = getClass().getResource(resource);
         if (res.toString().startsWith("jar:")) {
             try {
